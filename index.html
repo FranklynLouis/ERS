@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -89,7 +89,7 @@
     <p class="subtitle">Updated often for short-term gain opportunities.</p>
     <div class="stock">
       <div class="stock-title">Expedia Group Inc. (EXPE)</div>
-      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NASDAQ:EXPE"></iframe>
+      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NYSE:EXPE"></iframe>
       <p>Rating: ⭐⭐⭐⭐</p>
       <p><a href="#" onclick="fetchCompanyNews('EXPE', 'expe-news')">Recent News</a></p>
       <div id="expe-news"></div>
@@ -99,7 +99,7 @@
     <p class="subtitle">Long-term investments with growth potential. Includes research reports.</p>
     <div class="stock">
       <div class="stock-title">Diverge Energy Corp. (DEC)</div>
-      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NASDAQ:DEC"></iframe>
+      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NYSE:DEC"></iframe>
       <p>Rating: ⭐⭐⭐⭐</p>
       <p><a href="#" onclick="fetchCompanyNews('DEC', 'dec-news1')">Recent News</a></p>
       <div id="dec-news1"></div>
@@ -136,7 +136,7 @@
       document.getElementById(sectionId).classList.add('active');
     }
 
-    fetch('https://newsapi.org/v2/top-headlines?country=us&apiKey=ab40cc3f4aea49aab032bbe04fdc10b3')
+    fetch('https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=ab40cc3f4aea49aab032bbe04fdc10b3')
       .then(response => response.json())
       .then(data => {
         const newsSection = document.getElementById('news-content');
@@ -185,3 +185,4 @@
   </script>
 </body>
 </html>
+
