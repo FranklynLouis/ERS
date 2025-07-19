@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -159,7 +159,7 @@
       });
 
     function fetchCompanyNews(symbol, elementId) {
-      fetch(`https://api.marketaux.com/v1/news/all?symbols=${symbol}&filter_entities=true&api_token=YOUR_MARKETAUX_KEY`)
+      fetch(`https://corsproxy.io/?` + encodeURIComponent(`https://api.marketaux.com/v1/news/all?symbols=${symbol}&filter_entities=true&api_token=YOUR_MARKETAUX_KEY`))
         .then(response => response.json())
         .then(data => {
           const container = document.getElementById(elementId);
@@ -185,4 +185,3 @@
   </script>
 </body>
 </html>
-
