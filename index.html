@@ -1,20 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Equity Research Portfolio</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-    nav { background: #111; color: white; padding: 1em; display: flex; justify-content: space-around; }
-    nav a { color: white; text-decoration: none; padding: 0 1em; }
-    .section { padding: 2em; display: none; }
-    .active { display: block; }
-    .headline { margin-bottom: 0.5em; text-align: center; }
-    .stock { margin-bottom: 1.5em; }
-    .title { font-size: 1.5em; font-weight: bold; text-align: center; margin-bottom: 0.5em; }
-    .subtitle { font-size: 1em; color: gray; text-align: center; margin-bottom: 1em; }
-    iframe { width: 100%; height: 300px; border: none; }
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fafafa;
+      color: #111;
+    }
+    nav {
+      background: #111;
+      color: white;
+      padding: 1em;
+      display: flex;
+      justify-content: space-around;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 0 1em;
+      font-weight: 500;
+    }
+    .section {
+      padding: 2em;
+      display: none;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .active {
+      display: block;
+    }
+    .headline {
+      margin-bottom: 1em;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.5em;
+    }
+    .stock {
+      margin-bottom: 2.5em;
+    }
+    .title {
+      font-size: 2em;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 1em;
+    }
+    .stock-title {
+      font-size: 1.25em;
+      font-weight: 500;
+      margin-bottom: 0.5em;
+    }
+    .subtitle {
+      font-size: 1em;
+      color: #666;
+      text-align: center;
+      margin-bottom: 1.5em;
+    }
+    iframe {
+      width: 100%;
+      height: 300px;
+      border: none;
+    }
+    p, a {
+      font-size: 0.95em;
+    }
   </style>
 </head>
 <body>
@@ -34,15 +87,16 @@
     <h2 class="title">Quick Picks</h2>
     <p class="subtitle">Updated often for short-term gain opportunities.</p>
     <div class="stock">
-      <div class="title">Apple Inc. (AAPL)</div>
-      <iframe src="https://www.tradingview.com/embed-widget/single-quote/?symbol=NASDAQ:AAPL"></iframe>
+      <div class="stock-title">Apple Inc. (AAPL)</div>
+      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NASDAQ:AAPL"></iframe>
       <p>Rating: ⭐⭐⭐⭐</p>
       <p><a href="#" onclick="fetchCompanyNews('AAPL', 'aapl-news')">Recent News</a></p>
       <div id="aapl-news"></div>
     </div>
+
     <div class="stock">
-      <div class="title">Tesla Inc. (TSLA)</div>
-      <iframe src="https://www.tradingview.com/embed-widget/single-quote/?symbol=NASDAQ:TSLA"></iframe>
+      <div class="stock-title">Tesla Inc. (TSLA)</div>
+      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NASDAQ:TSLA"></iframe>
       <p>Rating: ⭐⭐⭐</p>
       <p><a href="#" onclick="fetchCompanyNews('TSLA', 'tsla-news')">Recent News</a></p>
       <div id="tsla-news"></div>
@@ -51,8 +105,8 @@
     <h2 class="title">No Look Growth</h2>
     <p class="subtitle">Long-term investments with growth potential. Includes research reports.</p>
     <div class="stock">
-      <div class="title">Microsoft Corp. (MSFT)</div>
-      <iframe src="https://www.tradingview.com/embed-widget/single-quote/?symbol=NASDAQ:MSFT"></iframe>
+      <div class="stock-title">Microsoft Corp. (MSFT)</div>
+      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NASDAQ:MSFT"></iframe>
       <p>Rating: ⭐⭐⭐⭐⭐</p>
       <p><a href="#" onclick="fetchCompanyNews('MSFT', 'msft-news')">Recent News</a> | <a href="https://example.com/research/msft-report.pdf" target="_blank">Research Report (PDF)</a></p>
       <div id="msft-news"></div>
@@ -75,7 +129,6 @@
       document.getElementById(sectionId).classList.add('active');
     }
 
-    // General top headlines with safety check
     fetch('https://newsapi.org/v2/top-headlines?country=us&apiKey=ab40cc3f4aea49aab032bbe04fdc10b3')
       .then(response => response.json())
       .then(data => {
@@ -97,7 +150,6 @@
         console.error('News API error:', error);
       });
 
-    // Fetch company-specific news from MarketAux (example API key)
     function fetchCompanyNews(symbol, elementId) {
       fetch(`https://api.marketaux.com/v1/news/all?symbols=${symbol}&filter_entities=true&api_token=YOUR_MARKETAUX_KEY`)
         .then(response => response.json())
