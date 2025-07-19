@@ -159,7 +159,7 @@
       });
 
     function fetchCompanyNews(symbol, elementId) {
-      fetch(`https://corsproxy.io/?` + encodeURIComponent(`https://api.marketaux.com/v1/news/all?symbols=${symbol}&filter_entities=true&api_token=YOUR_MARKETAUX_KEY`))
+      fetch(`https://corsproxy.io/?` + encodeURIComponent(`https://api.marketaux.com/v1/news/all?symbols=${symbol}&filter_entities=true&api_token=5MX4keTFwIpEGeJ0NUQs2iVDi1mX2HSuXYwFX9ve`))
         .then(response => response.json())
         .then(data => {
           const container = document.getElementById(elementId);
