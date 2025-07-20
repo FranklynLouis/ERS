@@ -76,7 +76,7 @@
     }
     .green { color: green; }
     .red { color: red; }
-    .rating-input, .symbol-input {
+    .rating-input, .symbol-input, .company-input {
       margin-top: 0.5em;
       margin-bottom: 0.5em;
       display: block;
@@ -135,25 +135,27 @@
       }
     }
 
-    function updateStock(id, symbol, rating) {
+    function updateStock(id, symbol, company, rating) {
       const container = document.getElementById(`stock-${id}`);
       container.innerHTML = `
-        <div class="stock-title">\${symbol}</div>
+        <div class="stock-title">\${company} (\${symbol})</div>
         <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=\${symbol}"></iframe>
         <div id="news-\${id}"></div>
         <p id="rating-\${id}" class="rating \${rating > 2.5 ? 'green' : 'red'}">\${rating.toFixed(1)} / 5</p>
         <input type="number" step="0.1" min="0" max="5" class="rating-input" placeholder="Update rating" oninput="updateRating('\${id}', this.value)" />
         <input type="text" class="symbol-input" value="\${symbol}" placeholder="Symbol (e.g. NYSE:EXPE)" oninput="refreshStock(this, '\${id}')" />
+        <input type="text" class="company-input" value="\${company}" placeholder="Company Name" oninput="refreshStock(this, '\${id}')" />
         <p>No report available</p>`;
-      fetchCompanyNews(symbol, `news-\${id}`);
+      fetchCompanyNews(company, `news-\${id}`);
     }
 
     function refreshStock(inputElem, id) {
       const container = document.getElementById(`stock-${id}`);
       const symbol = container.querySelector('.symbol-input').value;
+      const company = container.querySelector('.company-input').value;
       const ratingText = container.querySelector(`#rating-${id}`)?.textContent || "0 / 5";
       const rating = parseFloat(ratingText.split("/")[0]);
-      updateStock(id, symbol, rating);
+      updateStock(id, symbol, company, rating);
     }
 
     function fetchGeneralNews() {
@@ -180,15 +182,15 @@
         });
     }
 
-    function fetchCompanyNews(symbol, elementId) {
-      fetch(`https://corsproxy.io/?` + encodeURIComponent(`https://api.marketaux.com/v1/news/all?filter_entities=true&limit=10&api_token=5MX4keTFwIpEGeJ0NUQs2iVDi1mX2HSuXYwFX9ve&search=${symbol}`))
+    function fetchCompanyNews(name, elementId) {
+      fetch(`https://corsproxy.io/?` + encodeURIComponent(`https://api.marketaux.com/v1/news/all?filter_entities=true&limit=10&api_token=5MX4keTFwIpEGeJ0NUQs2iVDi1mX2HSuXYwFX9ve&search=${name}`))
         .then(response => response.json())
         .then(data => {
           const container = document.getElementById(elementId);
           container.innerHTML = '';
           if (data && data.data && Array.isArray(data.data)) {
             const filtered = data.data.filter(n =>
-              n.title && n.title.toUpperCase().includes(symbol.toUpperCase())
+              n.title && n.title.toUpperCase().includes(name.toUpperCase())
             );
             filtered.slice(0, 3).forEach(news => {
               const item = document.createElement('div');
@@ -209,10 +211,10 @@
     }
 
     fetchGeneralNews();
-    updateStock('expe', 'NYSE:EXPE', 3.7);
-    updateStock('dec1', 'NYSE:DEC', 3.2);
-    updateStock('dec2', 'NYSE:DEC', 2.3);
-    updateStock('dec3', 'NYSE:DEC', 3.5);
+    updateStock('expe', 'NYSE:EXPE', 'Expedia Group Inc.', 3.7);
+    updateStock('dec1', 'NYSE:DEC', 'Diversified Energy Company', 3.2);
+    updateStock('dec2', 'NYSE:DEC', 'Diversified Energy Company', 2.3);
+    updateStock('dec3', 'NYSE:DEC', 'Diversified Energy Company', 3.5);
   </script>
 </body>
 </html>
