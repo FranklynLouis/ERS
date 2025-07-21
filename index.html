@@ -92,16 +92,18 @@
       <canvas id="chart-aal"></canvas>
       <div id="news-aal"></div>
       <p id="rating-aal" class="rating green">3.8 / 5</p>
+      <input type="number" step="0.1" min="0" max="5" class="rating-input" placeholder="Update rating" oninput="updateRating('aal', this.value)" />
       <p>No report available</p>
     </div>
 
     <h2 class="title">NO LOOK GROWTH</h2>
-    <p class="subtitle">Long-term investments with growth potential. Includes research reports.</p>
+    <p class="subtitle">Long-term investments with growth potential.</p>
     <div class="stock">
       <div class="stock-title">Expedia Group Inc. (NASDAQ:EXPE)</div>
       <canvas id="chart-expe"></canvas>
       <div id="news-expe"></div>
       <p id="rating-expe" class="rating green">4.0 / 5</p>
+      <input type="number" step="0.1" min="0" max="5" class="rating-input" placeholder="Update rating" oninput="updateRating('expe', this.value)" />
       <p>No report available</p>
     </div>
   </div>
@@ -118,50 +120,75 @@
 
   <script>
     const API_KEY = 'JAKAWZBJIWZVSKZ1';
+    const NEWS_TOKEN = '5MX4keTFwIpEGeJ0NUQs2iVDi1mX2HSuXYwFX9ve';
 
     function showSection(sectionId) {
       document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
       document.getElementById(sectionId).classList.add('active');
     }
 
-    function fetchStockData(symbol, chartId) {
-      fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`)
-        .then(response => response.json())
-        .then(data => {
-          const timeSeries = data['Time Series (Daily)'];
-          const labels = Object.keys(timeSeries).slice(0, 30).reverse();
-          const prices = labels.map(date => parseFloat(timeSeries[date]['4. close']));
-
-          new Chart(document.getElementById(chartId), {
-            type: 'line',
-            data: {
-              labels: labels,
-              datasets: [{
-                label: `${symbol} Price`,
-                data: prices,
-                borderColor: 'blue',
-                backgroundColor: 'rgba(0,0,255,0.1)',
-                tension: 0.2,
-              }]
-            },
-            options: {
-              responsive: true,
-              plugins: { legend: { display: true } },
-              scales: {
-                x: { display: true },
-                y: { display: true }
-              }
-            }
-          });
-        })
-        .catch(err => console.error(`Error fetching ${symbol} data`, err));
+    function fetchGeneralNews() {
+      fetch(`https://corsproxy.io/?` + encodeURIComponent(
+        `https://api.marketaux.com/v1/news/all?countries=us&language=en&filter_entities=true&limit=10&api_token=${NEWS_TOKEN}`
+      ))
+      .then(res => res.json())
+      .then(data => {
+        const sec = document.getElementById('news-content'); sec.innerHTML = '';
+        if (data.data) data.data.forEach(article => {
+          const d = new Date(article.published_at).toLocaleString();
+          sec.innerHTML += `<div class="headline"><strong>${article.source}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
+        });
+      })
+      .catch(_=> document.getElementById('news-content').innerHTML='<p style="text-align:center">Unable to load news</p>');
     }
 
-    fetchStockData('AAL', 'chart-aal');
-    fetchStockData('EXPE', 'chart-expe');
+    function fetchCompanyNews(ticker, elId) {
+      fetch(`https://corsproxy.io/?` + encodeURIComponent(
+        `https://api.marketaux.com/v1/news/all?symbols=${ticker}&filter_entities=true&limit=10&api_token=${NEWS_TOKEN}`
+      ))
+      .then(res=>res.json())
+      .then(data=>{
+        const c = document.getElementById(elId); c.innerHTML='';
+        if (data.data) data.data.filter(n=>n.title.toUpperCase().includes(ticker))
+          .slice(0,3)
+          .forEach(n=>{
+            const d=new Date(n.published_at).toLocaleString();
+            c.innerHTML+=`<div class="headline"><strong>${n.source}: ${n.title}</strong><br><em>${d}</em><br><a href="${n.url}" target="_blank">Read full article</a></div>`;
+          });
+      })
+      .catch(_=> document.getElementById(elId).innerHTML='<p>No news available</p>');
+    }
+
+    function updateRating(id,value){
+      const r=parseFloat(value);
+      if(!isNaN(r)){
+        const el=document.getElementById('rating-'+id);
+        el.textContent=`${r.toFixed(1)} / 5`;
+        el.className='rating '+(r>2.5?'green':'red');
+      }
+    }
+
+    function fetchStockData(sym, cid) {
+      fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${sym}&apikey=${API_KEY}`)
+      .then(r=>r.json())
+      .then(d=>{
+        const ts=d['Time Series (Daily)'];
+        const labels=Object.keys(ts).slice(0,30).reverse();
+        const data=labels.map(date=>parseFloat(ts[date]['4. close']));
+        new Chart(document.getElementById(cid),{type:'line',data:{labels, datasets:[{label:`${sym} Price`,data,borderColor:'blue',backgroundColor:'rgba(0,0,255,0.1)',tension:0.2}]}, options:{responsive:true}});
+      });
+    }
+
+    // initial calls
+    fetchGeneralNews();
+    fetchCompanyNews('AAL','news-aal');
+    fetchCompanyNews('EXPE','news-expe');
+    fetchStockData('AAL','chart-aal');
+    fetchStockData('EXPE','chart-expe');
   </script>
 </body>
 </html>
+
 
 
 
