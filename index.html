@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -69,6 +69,16 @@
     p, a {
       font-size: 0.95em;
     }
+    .rating {
+      font-size: 1.1em;
+      font-weight: bold;
+      margin-top: 0.5em;
+    }
+    .green { color: green; }
+    .red { color: red; }
+    .rating-input {
+      margin-top: 0.5em;
+    }
   </style>
 </head>
 <body>
@@ -90,39 +100,43 @@
     <div class="stock">
       <div class="stock-title">Expedia Group Inc. (EXPE)</div>
       <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NYSE:EXPE"></iframe>
-      <p>Rating: ⭐⭐⭐⭐</p>
-      <p><a href="#" onclick="fetchCompanyNews('EXPE', 'expe-news')">Recent News</a></p>
       <div id="expe-news"></div>
+      <p id="rating-expe" class="rating green">3.7 / 5</p>
+      <input type="number" step="0.1" min="0" max="5" class="rating-input" placeholder="Update rating" oninput="updateRating('expe', this.value)" />
+      <p>No report available</p>
     </div>
 
     <h2 class="title">NO LOOK GROWTH</h2>
-    <p class="subtitle">Long-term investments with growth potential. Includes research reports.</p>
+    <p class="subtitle">Long-term investments with growth potential.</p>
     <div class="stock">
-      <div class="stock-title">Diverge Energy Corp. (DEC)</div>
+      <div class="stock-title">Diversified Energy Company (DEC)</div>
       <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NYSE:DEC"></iframe>
-      <p>Rating: ⭐⭐⭐⭐</p>
-      <p><a href="#" onclick="fetchCompanyNews('DEC', 'dec-news1')">Recent News</a></p>
       <div id="dec-news1"></div>
+      <p id="rating-dec1" class="rating green">3.2 / 5</p>
+      <input type="number" step="0.1" min="0" max="5" class="rating-input" placeholder="Update rating" oninput="updateRating('dec1', this.value)" />
+      <p>No report available</p>
     </div>
     <div class="stock">
-      <div class="stock-title">Diverge Energy Corp. (DEC)</div>
-      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NASDAQ:DEC"></iframe>
-      <p>Rating: ⭐⭐⭐</p>
-      <p><a href="#" onclick="fetchCompanyNews('DEC', 'dec-news2')">Recent News</a></p>
+      <div class="stock-title">Diversified Energy Company (DEC)</div>
+      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NYSE:DEC"></iframe>
       <div id="dec-news2"></div>
+      <p id="rating-dec2" class="rating red">2.3 / 5</p>
+      <input type="number" step="0.1" min="0" max="5" class="rating-input" placeholder="Update rating" oninput="updateRating('dec2', this.value)" />
+      <p>No report available</p>
     </div>
     <div class="stock">
-      <div class="stock-title">Diverge Energy Corp. (DEC)</div>
-      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NASDAQ:DEC"></iframe>
-      <p>Rating: ⭐⭐⭐⭐</p>
-      <p><a href="#" onclick="fetchCompanyNews('DEC', 'dec-news3')">Recent News</a> | <a href="https://example.com/research/dec-report.pdf" target="_blank">Research Report (PDF)</a></p>
+      <div class="stock-title">Diversified Energy Company (DEC)</div>
+      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NYSE:DEC"></iframe>
       <div id="dec-news3"></div>
+      <p id="rating-dec3" class="rating green">3.5 / 5</p>
+      <input type="number" step="0.1" min="0" max="5" class="rating-input" placeholder="Update rating" oninput="updateRating('dec3', this.value)" />
+      <p>No report available</p>
     </div>
   </div>
 
   <div id="sports" class="section">
     <h2 class="title">Sports Highlights</h2>
-    <p class="subtitle">Coming Soon: Live scores, player stats, and betting insights.</p>
+    <p class="subtitle">Coming Soon: stats analysis and betting insights.</p>
   </div>
 
   <div id="about" class="section">
@@ -136,36 +150,39 @@
       document.getElementById(sectionId).classList.add('active');
     }
 
-    fetch('https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=ab40cc3f4aea49aab032bbe04fdc10b3')
-      .then(response => response.json())
-      .then(data => {
-        const newsSection = document.getElementById('news-content');
-        newsSection.innerHTML = '';
-        if (data && data.articles && Array.isArray(data.articles)) {
-          data.articles.slice(0, 10).forEach(article => {
-            const el = document.createElement('div');
-            el.className = 'headline';
-            const date = new Date(article.publishedAt).toLocaleString();
-            el.innerHTML = `<strong>${article.source.name}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a>`;
-            newsSection.appendChild(el);
-          });
-        } else {
-          newsSection.innerHTML = '<p style="text-align:center">Unable to load news at this time.</p>';
-        }
-      })
-      .catch(error => {
-        document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news.</p>';
-        console.error('News API error:', error);
-      });
+    function fetchGeneralNews() {
+      fetch(`https://corsproxy.io/?` + encodeURIComponent(`https://api.marketaux.com/v1/news/all?countries=us&language=en&filter_entities=true&limit=10&api_token=5MX4keTFwIpEGeJ0NUQs2iVDi1mX2HSuXYwFX9ve`))
+        .then(response => response.json())
+        .then(data => {
+          const newsSection = document.getElementById('news-content');
+          newsSection.innerHTML = '';
+          if (data && data.data && Array.isArray(data.data)) {
+            data.data.forEach(article => {
+              const el = document.createElement('div');
+              el.className = 'headline';
+              const date = new Date(article.published_at).toLocaleString();
+              el.innerHTML = `<strong>${article.source}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a>`;
+              newsSection.appendChild(el);
+            });
+          } else {
+            newsSection.innerHTML = '<p style="text-align:center">Unable to load news at this time.</p>';
+          }
+        })
+        .catch(error => {
+          document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news.</p>';
+          console.error('MarketAux General News API error:', error);
+        });
+    }
 
     function fetchCompanyNews(symbol, elementId) {
-      fetch(`https://api.marketaux.com/v1/news/all?symbols=${symbol}&filter_entities=true&api_token=YOUR_MARKETAUX_KEY`)
+      fetch(`https://corsproxy.io/?` + encodeURIComponent(`https://api.marketaux.com/v1/news/all?filter_entities=true&limit=10&api_token=5MX4keTFwIpEGeJ0NUQs2iVDi1mX2HSuXYwFX9ve&search=${symbol}`))
         .then(response => response.json())
         .then(data => {
           const container = document.getElementById(elementId);
           container.innerHTML = '';
           if (data && data.data && Array.isArray(data.data)) {
-            data.data.slice(0, 3).forEach(news => {
+            const filtered = data.data.filter(n => n.title && n.title.toUpperCase().includes(symbol));
+            filtered.slice(0, 3).forEach(news => {
               const item = document.createElement('div');
               item.className = 'headline';
               const date = new Date(news.published_at).toLocaleString();
@@ -179,9 +196,24 @@
         .catch(error => {
           const container = document.getElementById(elementId);
           container.innerHTML = '<p>Error loading news.</p>';
-          console.error('MarketAux API error:', error);
+          console.error('MarketAux Company News API error:', error);
         });
     }
+
+    function updateRating(stockId, value) {
+      const element = document.getElementById(`rating-${stockId}`);
+      const rating = parseFloat(value);
+      if (!isNaN(rating)) {
+        element.textContent = `${rating.toFixed(1)} / 5`;
+        element.className = 'rating ' + (rating > 2.5 ? 'green' : 'red');
+      }
+    }
+
+    fetchGeneralNews();
+    fetchCompanyNews('EXPE', 'expe-news');
+    fetchCompanyNews('DEC', 'dec-news1');
+    fetchCompanyNews('DEC', 'dec-news2');
+    fetchCompanyNews('DEC', 'dec-news3');
   </script>
 </body>
 </html>
