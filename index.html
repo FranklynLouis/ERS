@@ -119,8 +119,8 @@
   </div>
 
   <script>
+    const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
     const API_KEY = 'JAKAWZBJIWZVSKZ1';
-    const NEWS_TOKEN = '5MX4keTFwIpEGeJ0NUQs2iVDi1mX2HSuXYwFX9ve';
 
     function showSection(sectionId) {
       document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
@@ -128,66 +128,83 @@
     }
 
     function fetchGeneralNews() {
-      fetch(`https://corsproxy.io/?` + encodeURIComponent(
-        `https://api.marketaux.com/v1/news/all?countries=us&language=en&filter_entities=true&limit=10&api_token=${NEWS_TOKEN}`
-      ))
-      .then(res => res.json())
-      .then(data => {
-        const sec = document.getElementById('news-content'); sec.innerHTML = '';
-        if (data.data) data.data.forEach(article => {
-          const d = new Date(article.published_at).toLocaleString();
-          sec.innerHTML += `<div class="headline"><strong>${article.source}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
-        });
-      })
-      .catch(_=> document.getElementById('news-content').innerHTML='<p style="text-align:center">Unable to load news</p>');
+      fetch(`https://newsapi.org/v2/top-headlines?country=us&category=business&pageSize=10&apiKey=${NEWSAPI_KEY}`)
+        .then(res => res.json())
+        .then(data => {
+          const sec = document.getElementById('news-content'); sec.innerHTML = '';
+          if (data.articles) {
+            data.articles.forEach(article => {
+              const d = new Date(article.publishedAt).toLocaleString();
+              sec.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
+            });
+          } else {
+            sec.innerHTML = '<p style="text-align:center">Unable to load news</p>';
+          }
+        })
+        .catch(_ => document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news</p>');
     }
 
     function fetchCompanyNews(ticker, elId) {
-      fetch(`https://corsproxy.io/?` + encodeURIComponent(
-        `https://api.marketaux.com/v1/news/all?symbols=${ticker}&filter_entities=true&limit=10&api_token=${NEWS_TOKEN}`
-      ))
-      .then(res=>res.json())
-      .then(data=>{
-        const c = document.getElementById(elId); c.innerHTML='';
-        if (data.data) data.data.filter(n=>n.title.toUpperCase().includes(ticker))
-          .slice(0,3)
-          .forEach(n=>{
-            const d=new Date(n.published_at).toLocaleString();
-            c.innerHTML+=`<div class="headline"><strong>${n.source}: ${n.title}</strong><br><em>${d}</em><br><a href="${n.url}" target="_blank">Read full article</a></div>`;
-          });
-      })
-      .catch(_=> document.getElementById(elId).innerHTML='<p>No news available</p>');
+      fetch(`https://newsapi.org/v2/everything?q=${ticker}&pageSize=3&sortBy=publishedAt&apiKey=${NEWSAPI_KEY}`)
+        .then(res => res.json())
+        .then(data => {
+          const c = document.getElementById(elId); c.innerHTML = '';
+          if (data.articles) {
+            data.articles.forEach(article => {
+              const d = new Date(article.publishedAt).toLocaleString();
+              c.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
+            });
+          } else {
+            c.innerHTML = '<p>No news available</p>';
+          }
+        })
+        .catch(_ => document.getElementById(elId).innerHTML = '<p>Error loading news</p>');
     }
 
-    function updateRating(id,value){
-      const r=parseFloat(value);
-      if(!isNaN(r)){
-        const el=document.getElementById('rating-'+id);
-        el.textContent=`${r.toFixed(1)} / 5`;
-        el.className='rating '+(r>2.5?'green':'red');
+    function updateRating(stockId, value) {
+      const element = document.getElementById(`rating-${stockId}`);
+      const rating = parseFloat(value);
+      if (!isNaN(rating)) {
+        element.textContent = `${rating.toFixed(1)} / 5`;
+        element.className = 'rating ' + (rating > 2.5 ? 'green' : 'red');
       }
     }
 
     function fetchStockData(sym, cid) {
       fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${sym}&apikey=${API_KEY}`)
-      .then(r=>r.json())
-      .then(d=>{
-        const ts=d['Time Series (Daily)'];
-        const labels=Object.keys(ts).slice(0,30).reverse();
-        const data=labels.map(date=>parseFloat(ts[date]['4. close']));
-        new Chart(document.getElementById(cid),{type:'line',data:{labels, datasets:[{label:`${sym} Price`,data,borderColor:'blue',backgroundColor:'rgba(0,0,255,0.1)',tension:0.2}]}, options:{responsive:true}});
-      });
+        .then(r => r.json())
+        .then(d => {
+          const ts = d['Time Series (Daily)'];
+          const labels = Object.keys(ts).slice(0, 30).reverse();
+          const data = labels.map(date => parseFloat(ts[date]['4. close']));
+          new Chart(document.getElementById(cid), {
+            type: 'line',
+            data: {
+              labels,
+              datasets: [{
+                label: `${sym} Price`,
+                data,
+                borderColor: 'blue',
+                backgroundColor: 'rgba(0,0,255,0.1)',
+                tension: 0.2
+              }]
+            },
+            options: { responsive: true }
+          });
+        })
+        .catch(err => console.error(`Error fetching ${sym} data`, err));
     }
 
     // initial calls
     fetchGeneralNews();
-    fetchCompanyNews('AAL','news-aal');
-    fetchCompanyNews('EXPE','news-expe');
-    fetchStockData('AAL','chart-aal');
-    fetchStockData('EXPE','chart-expe');
+    fetchCompanyNews('AAL', 'news-aal');
+    fetchCompanyNews('EXPE', 'news-expe');
+    fetchStockData('AAL', 'chart-aal');
+    fetchStockData('EXPE', 'chart-expe');
   </script>
 </body>
 </html>
+
 
 
 
