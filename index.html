@@ -76,8 +76,10 @@
     }
     .green { color: green; }
     .red { color: red; }
-    .rating-input {
-      margin-top: 0.5em;
+    .tradingview-widget-container {
+      height: 400px;
+      width: 100%;
+      margin-bottom: 1em;
     }
   </style>
 </head>
@@ -98,45 +100,41 @@
     <h2 class="title">QUICK PICK</h2>
     <p class="subtitle">Updated often for short-term gain opportunities.</p>
     <div class="stock">
-      <div class="stock-title">Expedia Group Inc. (EXPE)</div>
-      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NYSE:EXPE"></iframe>
-      <div id="expe-news"></div>
-      <p id="rating-expe" class="rating green">3.7 / 5</p>
-      <input type="number" step="0.1" min="0" max="5" class="rating-input" placeholder="Update rating" oninput="updateRating('expe', this.value)" />
+      <div class="stock-title">American Airlines (NASDAQ:AAL)</div>
+      <div class="tradingview-widget-container"><div id="chart-aal"></div></div>
+      <div id="news-aal"></div>
+      <p id="rating-aal" class="rating green">3.8 / 5</p>
       <p>No report available</p>
     </div>
 
     <h2 class="title">NO LOOK GROWTH</h2>
-    <p class="subtitle">Long-term investments with growth potential.</p>
+    <p class="subtitle">Long-term investments with growth potential. Includes research reports.</p>
     <div class="stock">
-      <div class="stock-title">Diversified Energy Company (DEC)</div>
-      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NYSE:DEC"></iframe>
-      <div id="dec-news1"></div>
-      <p id="rating-dec1" class="rating green">3.2 / 5</p>
-      <input type="number" step="0.1" min="0" max="5" class="rating-input" placeholder="Update rating" oninput="updateRating('dec1', this.value)" />
+      <div class="stock-title">Expedia Group Inc. (NASDAQ:EXPE)</div>
+      <div class="tradingview-widget-container"><div id="chart-expe1"></div></div>
+      <div id="news-expe1"></div>
+      <p id="rating-expe1" class="rating green">4.0 / 5</p>
       <p>No report available</p>
     </div>
     <div class="stock">
-      <div class="stock-title">Diversified Energy Company (DEC)</div>
-      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NYSE:DEC"></iframe>
-      <div id="dec-news2"></div>
-      <p id="rating-dec2" class="rating red">2.3 / 5</p>
-      <input type="number" step="0.1" min="0" max="5" class="rating-input" placeholder="Update rating" oninput="updateRating('dec2', this.value)" />
+      <div class="stock-title">Expedia Group Inc. (NASDAQ:EXPE)</div>
+      <div class="tradingview-widget-container"><div id="chart-expe2"></div></div>
+      <div id="news-expe2"></div>
+      <p id="rating-expe2" class="rating green">3.6 / 5</p>
       <p>No report available</p>
     </div>
     <div class="stock">
-      <div class="stock-title">Diversified Energy Company (DEC)</div>
-      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NYSE:DEC"></iframe>
-      <div id="dec-news3"></div>
-      <p id="rating-dec3" class="rating green">3.5 / 5</p>
-      <input type="number" step="0.1" min="0" max="5" class="rating-input" placeholder="Update rating" oninput="updateRating('dec3', this.value)" />
+      <div class="stock-title">Expedia Group Inc. (NASDAQ:EXPE)</div>
+      <div class="tradingview-widget-container"><div id="chart-expe3"></div></div>
+      <div id="news-expe3"></div>
+      <p id="rating-expe3" class="rating red">2.4 / 5</p>
       <p>No report available</p>
     </div>
   </div>
 
   <div id="sports" class="section">
     <h2 class="title">Sports Highlights</h2>
-    <p class="subtitle">Coming Soon: stats analysis and betting insights.</p>
+    <p class="subtitle">Coming Soon: Live scores, player stats, and betting insights.</p>
   </div>
 
   <div id="about" class="section">
@@ -144,6 +142,7 @@
     <p style="text-align:center">This site is created and maintained as part of a personal equity research portfolio, sharing market insights, stock picks, and financial literacy content.</p>
   </div>
 
+  <script src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js"></script>
   <script>
     function showSection(sectionId) {
       document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
@@ -174,15 +173,17 @@
         });
     }
 
-    function fetchCompanyNews(symbol, elementId) {
-      fetch(`https://corsproxy.io/?` + encodeURIComponent(`https://api.marketaux.com/v1/news/all?filter_entities=true&limit=10&api_token=5MX4keTFwIpEGeJ0NUQs2iVDi1mX2HSuXYwFX9ve&search=${symbol}`))
+    function fetchCompanyNews(ticker, elementId) {
+      fetch(`https://corsproxy.io/?` + encodeURIComponent(`https://api.marketaux.com/v1/news/all?filter_entities=true&limit=10&api_token=5MX4keTFwIpEGeJ0NUQs2iVDi1mX2HSuXYwFX9ve&search=${ticker}`))
         .then(response => response.json())
         .then(data => {
           const container = document.getElementById(elementId);
           container.innerHTML = '';
           if (data && data.data && Array.isArray(data.data)) {
-            const filtered = data.data.filter(n => n.title && n.title.toUpperCase().includes(symbol));
-            filtered.slice(0, 3).forEach(news => {
+            const filtered = data.data.filter(n =>
+              n.title && n.title.toUpperCase().includes(ticker.toUpperCase())
+            );
+            filtered.slice(0, 10).forEach(news => {
               const item = document.createElement('div');
               item.className = 'headline';
               const date = new Date(news.published_at).toLocaleString();
@@ -200,23 +201,47 @@
         });
     }
 
-    function updateRating(stockId, value) {
-      const element = document.getElementById(`rating-${stockId}`);
-      const rating = parseFloat(value);
-      if (!isNaN(rating)) {
-        element.textContent = `${rating.toFixed(1)} / 5`;
-        element.className = 'rating ' + (rating > 2.5 ? 'green' : 'red');
-      }
+    function renderTradingViewChart(id, symbol) {
+      new TradingView.widget({
+        container_id: id,
+        symbol: symbol,
+        allow_symbol_change: false,
+        calendar: false,
+        details: true,
+        hide_side_toolbar: true,
+        hide_top_toolbar: true,
+        hide_legend: false,
+        hide_volume: true,
+        interval: "W",
+        locale: "en",
+        save_image: false,
+        style: "2",
+        theme: "light",
+        timezone: "America/New_York",
+        backgroundColor: "#ffffff",
+        gridColor: "rgba(46, 46, 46, 0.06)",
+        watchlist: [],
+        withdateranges: false,
+        compareSymbols: [],
+        studies: [],
+        autosize: true
+      });
     }
 
     fetchGeneralNews();
-    fetchCompanyNews('EXPE', 'expe-news');
-    fetchCompanyNews('DEC', 'dec-news1');
-    fetchCompanyNews('DEC', 'dec-news2');
-    fetchCompanyNews('DEC', 'dec-news3');
+    fetchCompanyNews('AAL', 'news-aal');
+    fetchCompanyNews('EXPE', 'news-expe1');
+    fetchCompanyNews('EXPE', 'news-expe2');
+    fetchCompanyNews('EXPE', 'news-expe3');
+
+    renderTradingViewChart("chart-aal", "NASDAQ:AAL");
+    renderTradingViewChart("chart-expe1", "NASDAQ:EXPE");
+    renderTradingViewChart("chart-expe2", "NASDAQ:EXPE");
+    renderTradingViewChart("chart-expe3", "NASDAQ:EXPE");
   </script>
 </body>
 </html>
+
 
 
 
