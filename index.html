@@ -62,13 +62,14 @@
       text-align: center;
       margin-bottom: 1.5em;
     }
-    .rating {
-      font-size: 1.1em;
-      font-weight: bold;
-      margin-top: 0.5em;
+    canvas {
+      width: 100% !important;
+      height: 300px !important;
+      margin-bottom: 1em;
     }
-    .green { color: green; }
-    .red { color: red; }
+    p, a {
+      font-size: 0.95em;
+    }
   </style>
 </head>
 <body>
@@ -91,19 +92,30 @@
       <div class="stock-title">American Airlines (NASDAQ:AAL)</div>
       <canvas id="chart-aal"></canvas>
       <div id="news-aal"></div>
-      <p id="rating-aal" class="rating green">3.8 / 5</p>
-      <input type="number" step="0.1" min="0" max="5" class="rating-input" placeholder="Update rating" oninput="updateRating('aal', this.value)" />
       <p>No report available</p>
     </div>
 
     <h2 class="title">NO LOOK GROWTH</h2>
     <p class="subtitle">Long-term investments with growth potential.</p>
+    <!-- Long Term Stock 1 -->
     <div class="stock">
       <div class="stock-title">Expedia Group Inc. (NASDAQ:EXPE)</div>
       <canvas id="chart-expe"></canvas>
       <div id="news-expe"></div>
-      <p id="rating-expe" class="rating green">4.0 / 5</p>
-      <input type="number" step="0.1" min="0" max="5" class="rating-input" placeholder="Update rating" oninput="updateRating('expe', this.value)" />
+      <p>No report available</p>
+    </div>
+    <!-- Long Term Stock 2 -->
+    <div class="stock">
+      <div class="stock-title">Diversified Energy Company (NYSE:DEC)</div>
+      <canvas id="chart-dec"></canvas>
+      <div id="news-dec"></div>
+      <p>No report available</p>
+    </div>
+    <!-- Long Term Stock 3 -->
+    <div class="stock">
+      <div class="stock-title">Microsoft Corp. (NASDAQ:MSFT)</div>
+      <canvas id="chart-msft"></canvas>
+      <div id="news-msft"></div>
       <p>No report available</p>
     </div>
   </div>
@@ -119,8 +131,8 @@
   </div>
 
   <script>
-    const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
     const API_KEY = 'JAKAWZBJIWZVSKZ1';
+    const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
 
     function showSection(sectionId) {
       document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
@@ -132,14 +144,10 @@
         .then(res => res.json())
         .then(data => {
           const sec = document.getElementById('news-content'); sec.innerHTML = '';
-          if (data.articles) {
-            data.articles.forEach(article => {
-              const d = new Date(article.publishedAt).toLocaleString();
-              sec.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
-            });
-          } else {
-            sec.innerHTML = '<p style="text-align:center">Unable to load news</p>';
-          }
+          data.articles.forEach(article => {
+            const d = new Date(article.publishedAt).toLocaleString();
+            sec.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
+          });
         })
         .catch(_ => document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news</p>');
     }
@@ -149,25 +157,12 @@
         .then(res => res.json())
         .then(data => {
           const c = document.getElementById(elId); c.innerHTML = '';
-          if (data.articles) {
-            data.articles.forEach(article => {
-              const d = new Date(article.publishedAt).toLocaleString();
-              c.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
-            });
-          } else {
-            c.innerHTML = '<p>No news available</p>';
-          }
+          data.articles.forEach(article => {
+            const d = new Date(article.publishedAt).toLocaleString();
+            c.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
+          });
         })
-        .catch(_ => document.getElementById(elId).innerHTML = '<p>Error loading news</p>');
-    }
-
-    function updateRating(stockId, value) {
-      const element = document.getElementById(`rating-${stockId}`);
-      const rating = parseFloat(value);
-      if (!isNaN(rating)) {
-        element.textContent = `${rating.toFixed(1)} / 5`;
-        element.className = 'rating ' + (rating > 2.5 ? 'green' : 'red');
-      }
+        .catch(_ => document.getElementById(elId).innerHTML = '<p>No news available</p>');
     }
 
     function fetchStockData(sym, cid) {
@@ -176,34 +171,30 @@
         .then(d => {
           const ts = d['Time Series (Daily)'];
           const labels = Object.keys(ts).slice(0, 30).reverse();
-          const data = labels.map(date => parseFloat(ts[date]['4. close']));
+          const prices = labels.map(date => parseFloat(ts[date]['4. close']));
           new Chart(document.getElementById(cid), {
             type: 'line',
-            data: {
-              labels,
-              datasets: [{
-                label: `${sym} Price`,
-                data,
-                borderColor: 'blue',
-                backgroundColor: 'rgba(0,0,255,0.1)',
-                tension: 0.2
-              }]
-            },
+            data: { labels, datasets: [{ label: `${sym} Price`, data: prices, borderColor: 'blue', backgroundColor: 'rgba(0,0,255,0.1)', tension: 0.2 }] },
             options: { responsive: true }
           });
         })
-        .catch(err => console.error(`Error fetching ${sym} data`, err));
+        .catch(err => console.error(err));
     }
 
-    // initial calls
+    // Initialize
     fetchGeneralNews();
-    fetchCompanyNews('AAL', 'news-aal');
-    fetchCompanyNews('EXPE', 'news-expe');
-    fetchStockData('AAL', 'chart-aal');
-    fetchStockData('EXPE', 'chart-expe');
+    fetchCompanyNews('AAL','news-aal');
+    fetchCompanyNews('EXPE','news-expe');
+    fetchCompanyNews('DEC','news-dec');
+    fetchCompanyNews('MSFT','news-msft');
+    fetchStockData('AAL','chart-aal');
+    fetchStockData('EXPE','chart-expe');
+    fetchStockData('DEC','chart-dec');
+    fetchStockData('MSFT','chart-msft');
   </script>
 </body>
 </html>
+
 
 
 
