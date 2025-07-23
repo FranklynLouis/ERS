@@ -6,70 +6,18 @@
   <title>Equity Research Portfolio</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #fafafa;
-      color: #111;
-    }
-    nav {
-      background: #111;
-      color: white;
-      padding: 1em;
-      display: flex;
-      justify-content: space-around;
-    }
-    nav a {
-      color: white;
-      text-decoration: none;
-      padding: 0 1em;
-      font-weight: 500;
-    }
-    .section {
-      padding: 2em;
-      display: none;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-    .active {
-      display: block;
-    }
-    .headline {
-      margin-bottom: 1em;
-      text-align: left;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 0.5em;
-    }
-    .stock {
-      margin-bottom: 2.5em;
-    }
-    .title {
-      font-size: 2.25em;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 1em;
-      text-transform: uppercase;
-    }
-    .stock-title {
-      font-size: 1.25em;
-      font-weight: 500;
-      margin-bottom: 0.5em;
-    }
-    .subtitle {
-      font-size: 1em;
-      color: #666;
-      text-align: center;
-      margin-bottom: 1.5em;
-    }
-    canvas {
-      width: 100% !important;
-      height: 300px !important;
-      margin-bottom: 1em;
-    }
-    p, a {
-      font-size: 0.95em;
-    }
+    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #fafafa; color: #111; }
+    nav { background: #111; color: white; padding: 1em; display: flex; justify-content: space-around; }
+    nav a { color: white; text-decoration: none; padding: 0 1em; font-weight: 500; }
+    .section { padding: 2em; display: none; max-width: 1000px; margin: 0 auto; }
+    .active { display: block; }
+    .headline { margin-bottom: 1em; text-align: left; border-bottom: 1px solid #ccc; padding-bottom: 0.5em; }
+    .stock { margin-bottom: 2.5em; }
+    .title { font-size: 2.25em; font-weight: 600; text-align: center; margin-bottom: 1em; text-transform: uppercase; }
+    .stock-title { font-size: 1.25em; font-weight: 500; margin-bottom: 0.5em; }
+    .subtitle { font-size: 1em; color: #666; text-align: center; margin-bottom: 1.5em; }
+    canvas { width: 100% !important; height: 300px !important; margin-bottom: 1em; }
+    p, a { font-size: 0.95em; }
   </style>
 </head>
 <body>
@@ -97,21 +45,18 @@
 
     <h2 class="title">NO LOOK GROWTH</h2>
     <p class="subtitle">Long-term investments with growth potential.</p>
-    <!-- Long Term Stock 1 -->
     <div class="stock">
       <div class="stock-title">Expedia Group Inc. (NASDAQ:EXPE)</div>
       <canvas id="chart-expe"></canvas>
       <div id="news-expe"></div>
       <p>No report available</p>
     </div>
-    <!-- Long Term Stock 2 -->
     <div class="stock">
       <div class="stock-title">Diversified Energy Company (NYSE:DEC)</div>
       <canvas id="chart-dec"></canvas>
       <div id="news-dec"></div>
       <p>No report available</p>
     </div>
-    <!-- Long Term Stock 3 -->
     <div class="stock">
       <div class="stock-title">Microsoft Corp. (NASDAQ:MSFT)</div>
       <canvas id="chart-msft"></canvas>
@@ -144,7 +89,7 @@
         .then(res => res.json())
         .then(data => {
           const sec = document.getElementById('news-content'); sec.innerHTML = '';
-          if (data.articles) {
+          if (data && data.articles) {
             data.articles.forEach(article => {
               const d = new Date(article.publishedAt).toLocaleString();
               sec.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
@@ -161,7 +106,7 @@
         .then(res => res.json())
         .then(data => {
           const c = document.getElementById(elId); c.innerHTML = '';
-          if (data.articles) {
+          if (data && data.articles) {
             data.articles.forEach(article => {
               const d = new Date(article.publishedAt).toLocaleString();
               c.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
@@ -189,7 +134,7 @@
         .catch(err => console.error(`Error fetching ${sym} data`, err));
     }
 
-    // Initialize
+    // Initialize all sections
     fetchGeneralNews();
     fetchCompanyNews('AAL','news-aal');
     fetchCompanyNews('EXPE','news-expe');
@@ -202,6 +147,7 @@
   </script>
 </body>
 </html>
+
 
 
 
