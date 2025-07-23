@@ -30,7 +30,7 @@
 
   <div id="news" class="section active">
     <h2 class="title">Top News Headlines</h2>
-    <div id="news-content"></div>
+    <div id="news-content">Loading news...</div>
   </div>
 
   <div id="investing" class="section">
@@ -39,7 +39,7 @@
     <div class="stock">
       <div class="stock-title">American Airlines (NASDAQ:AAL)</div>
       <canvas id="chart-aal"></canvas>
-      <div id="news-aal"></div>
+      <div id="news-aal">Loading news...</div>
       <p>No report available</p>
     </div>
 
@@ -48,19 +48,19 @@
     <div class="stock">
       <div class="stock-title">Expedia Group Inc. (NASDAQ:EXPE)</div>
       <canvas id="chart-expe"></canvas>
-      <div id="news-expe"></div>
+      <div id="news-expe">Loading news...</div>
       <p>No report available</p>
     </div>
     <div class="stock">
       <div class="stock-title">Diversified Energy Company (NYSE:DEC)</div>
       <canvas id="chart-dec"></canvas>
-      <div id="news-dec"></div>
+      <div id="news-dec">Loading news...</div>
       <p>No report available</p>
     </div>
     <div class="stock">
       <div class="stock-title">Microsoft Corp. (NASDAQ:MSFT)</div>
       <canvas id="chart-msft"></canvas>
-      <div id="news-msft"></div>
+      <div id="news-msft">Loading news...</div>
       <p>No report available</p>
     </div>
   </div>
@@ -76,93 +76,94 @@
   </div>
 
   <script>
+    // Keys
     const API_KEY = 'JAKAWZBJIWZVSKZ1';
     const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
+    const PROXY = 'https://api.allorigins.win/raw?url=';
 
+    // Section toggle
     function showSection(sectionId) {
       document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
       document.getElementById(sectionId).classList.add('active');
     }
 
+    // Fetch general news (10 articles)
     function fetchGeneralNews() {
       const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&pageSize=10&apiKey=${NEWSAPI_KEY}`;
-      fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`)
-        .then(res => res.json())
-        .then(data => {
-          const sec = document.getElementById('news-content'); sec.innerHTML = '';
-          if (data.articles) {
-            data.articles.forEach(article => {
-              const d = new Date(article.publishedAt).toLocaleString();
-              sec.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
-            });
-          } else {
-            sec.innerHTML = '<p style="text-align:center">No news available</p>';
-          }
-        })
-        .catch(() => document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news</p>');
-    }
-`)
-        .then(res => res.json())
-        .then(data => {
-          const sec = document.getElementById('news-content'); sec.innerHTML = '';
-          if (data.articles) {
-            data.articles.forEach(article => {
-              const d = new Date(article.publishedAt).toLocaleString();
-              sec.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
-            });
-          } else {
-            sec.innerHTML = '<p style="text-align:center">No news available</p>';
-          }
-        })
-        .catch(() => document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news</p>');
-    }
-
-    function fetchCompanyNews(ticker, elId) {
-      fetch(`https://newsapi.org/v2/everything?q=${encodeURIComponent(ticker)}&pageSize=3&sortBy=publishedAt&apiKey=${NEWSAPI_KEY}`)
-        .then(res => res.json())
-        .then(data => {
-          const c = document.getElementById(elId); c.innerHTML = '';
-          if (data.articles) {
-            data.articles.forEach(article => {
-              const d = new Date(article.publishedAt).toLocaleString();
-              c.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
-            });
-          } else {
-            c.innerHTML = '<p>No news available</p>';
-          }
-        })
-        .catch(() => document.getElementById(elId).innerHTML = '<p>Error loading news</p>');
-    }
-
-    function fetchStockData(sym, cid) {
-      fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${sym}&apikey=${API_KEY}`)
+      fetch(PROXY + encodeURIComponent(url))
         .then(r => r.json())
-        .then(d => {
-          const ts = d['Time Series (Daily)'];
-          const labels = Object.keys(ts).slice(0, 30).reverse();
-          const prices = labels.map(date => parseFloat(ts[date]['4. close']));
-          new Chart(document.getElementById(cid), {
+        .then(data => {
+          const container = document.getElementById('news-content');
+          container.innerHTML = '';
+          if (data.articles && data.articles.length) {
+            data.articles.forEach(article => {
+              const date = new Date(article.publishedAt).toLocaleString();
+              container.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
+            });
+          } else {
+            container.innerHTML = '<p style="text-align:center">No news available</p>';
+          }
+        })
+        .catch(() => {
+          document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news</p>';
+        });
+    }
+
+    // Fetch company news (2 articles)
+    function fetchCompanyNews(ticker, elementId) {
+      const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(ticker)}&pageSize=2&sortBy=publishedAt&apiKey=${NEWSAPI_KEY}`;
+      fetch(PROXY + encodeURIComponent(url))
+        .then(r => r.json())
+        .then(data => {
+          const container = document.getElementById(elementId);
+          container.innerHTML = '';
+          if (data.articles && data.articles.length) {
+            data.articles.forEach(article => {
+              const date = new Date(article.publishedAt).toLocaleString();
+              container.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
+            });
+          } else {
+            container.innerHTML = '<p style="text-align:center">No news available</p>';
+          }
+        })
+        .catch(() => {
+          document.getElementById(elementId).innerHTML = '<p style="text-align:center">Error loading news</p>';
+        });
+    }
+
+    // Fetch and render stock price chart
+    function fetchStockData(symbol, canvasId) {
+      fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`)
+        .then(r => r.json())
+        .then(data => {
+          const timeSeries = data['Time Series (Daily)'];
+          const dates = Object.keys(timeSeries).slice(0, 30).reverse();
+          const prices = dates.map(d => parseFloat(timeSeries[d]['4. close']));
+          new Chart(document.getElementById(canvasId), {
             type: 'line',
-            data: { labels, datasets: [{ label: `${sym} Price`, data: prices, borderColor: 'blue', backgroundColor: 'rgba(0,0,255,0.1)', tension: 0.2 }] },
+            data: { labels: dates, datasets: [{ label: `${symbol} Price`, data: prices, borderColor: 'blue', backgroundColor: 'rgba(0,0,255,0.1)', tension: 0.2 }] },
             options: { responsive: true }
           });
         })
-        .catch(err => console.error(`Error fetching ${sym} data`, err));
+        .catch(e => console.error(`Error fetching ${symbol}`, e));
     }
 
-    // Initialize all sections
-    fetchGeneralNews();
-    fetchCompanyNews('AAL','news-aal');
-    fetchCompanyNews('EXPE','news-expe');
-    fetchCompanyNews('DEC','news-dec');
-    fetchCompanyNews('MSFT','news-msft');
-    fetchStockData('AAL','chart-aal');
-    fetchStockData('EXPE','chart-expe');
-    fetchStockData('DEC','chart-dec');
-    fetchStockData('MSFT','chart-msft');
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchGeneralNews();
+      fetchCompanyNews('AAL', 'news-aal');
+      fetchCompanyNews('EXPE', 'news-expe');
+      fetchCompanyNews('DEC', 'news-dec');
+      fetchCompanyNews('MSFT', 'news-msft');
+      fetchStockData('AAL', 'chart-aal');
+      fetchStockData('EXPE', 'chart-expe');
+      fetchStockData('DEC', 'chart-dec');
+      fetchStockData('MSFT', 'chart-msft');
+    });
   </script>
 </body>
 </html>
+
 
 
 
