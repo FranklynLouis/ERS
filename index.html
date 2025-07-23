@@ -85,7 +85,23 @@
     }
 
     function fetchGeneralNews() {
-      fetch(`https://newsapi.org/v2/top-headlines?country=us&category=business&pageSize=10&apiKey=${NEWSAPI_KEY}`)
+      const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&pageSize=10&apiKey=${NEWSAPI_KEY}`;
+      fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`)
+        .then(res => res.json())
+        .then(data => {
+          const sec = document.getElementById('news-content'); sec.innerHTML = '';
+          if (data.articles) {
+            data.articles.forEach(article => {
+              const d = new Date(article.publishedAt).toLocaleString();
+              sec.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
+            });
+          } else {
+            sec.innerHTML = '<p style="text-align:center">No news available</p>';
+          }
+        })
+        .catch(() => document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news</p>');
+    }
+`)
         .then(res => res.json())
         .then(data => {
           const sec = document.getElementById('news-content'); sec.innerHTML = '';
