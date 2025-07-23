@@ -22,13 +22,13 @@
 </head>
 <body>
   <nav>
-    <a href="#" onclick="showSection('news')">News</a>
-    <a href="#" onclick="showSection('investing')">Investing</a>
-    <a href="#" onclick="showSection('sports')">Sports</a>
-    <a href="#" onclick="showSection('about')">About</a>
+    <a href="#news">News</a>
+    <a href="#investing">Investing</a>
+    <a href="#sports">Sports</a>
+    <a href="#about">About</a>
   </nav>
 
-  <div id="news" class="section active">
+  <div id="news" class="section">
     <h2 class="title">Top News Headlines</h2>
     <div id="news-content">Loading news...</div>
   </div>
@@ -76,16 +76,23 @@
   </div>
 
   <script>
-    // Keys
+    // API Keys and proxy
     const API_KEY = 'JAKAWZBJIWZVSKZ1';
     const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
-    const PROXY = 'https://api.allorigins.win/raw?url='; // single declaration
+    const PROXY = 'https://api.allorigins.win/raw?url=';
 
-    // Section toggle
+    // Toggle visibility based on hash
     function showSection(sectionId) {
       document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-      document.getElementById(sectionId).classList.add('active');
+      const target = document.getElementById(sectionId);
+      if (target) target.classList.add('active');
     }
+
+    // Handle hash changes
+    window.addEventListener('hashchange', () => {
+      const id = location.hash.substring(1) || 'news';
+      showSection(id);
+    });
 
     // Fetch general news (10 articles)
     function fetchGeneralNews() {
@@ -136,9 +143,9 @@
       fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`)
         .then(r => r.json())
         .then(data => {
-          const timeSeries = data['Time Series (Daily)'];
-          const dates = Object.keys(timeSeries).slice(0, 30).reverse();
-          const prices = dates.map(d => parseFloat(timeSeries[d]['4. close']));
+          const ts = data['Time Series (Daily)'];
+          const dates = Object.keys(ts).slice(0, 30).reverse();
+          const prices = dates.map(d => parseFloat(ts[d]['4. close']));
           new Chart(document.getElementById(canvasId), {
             type: 'line',
             data: { labels: dates, datasets: [{ label: `${symbol} Price`, data: prices, borderColor: 'blue', backgroundColor: 'rgba(0,0,255,0.1)', tension: 0.2 }] },
@@ -148,8 +155,10 @@
         .catch(e => console.error(`Error fetching ${symbol}`, e));
     }
 
-    // Initialize
+    // Initialize on load
     document.addEventListener('DOMContentLoaded', () => {
+      const initial = location.hash.substring(1) || 'news';
+      showSection(initial);
       fetchGeneralNews();
       fetchCompanyNews('AAL', 'news-aal');
       fetchCompanyNews('EXPE', 'news-expe');
@@ -163,6 +172,7 @@
   </script>
 </body>
 </html>
+
 
 
 
