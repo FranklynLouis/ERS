@@ -132,7 +132,7 @@
 
   <script>
     const API_KEY = 'JAKAWZBJIWZVSKZ1';
-    const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
+    const GNEWS_KEY = '12f592f2767996f7f0457e04181bc33a';
 
     function showSection(sectionId) {
       document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
@@ -140,29 +140,37 @@
     }
 
     function fetchGeneralNews() {
-      fetch(`https://newsapi.org/v2/top-headlines?country=us&category=business&pageSize=10&apiKey=${NEWSAPI_KEY}`)
+      fetch(`https://gnews.io/api/v4/top-headlines?token=${GNEWS_KEY}&lang=en&country=us&max=10`)
         .then(res => res.json())
         .then(data => {
           const sec = document.getElementById('news-content'); sec.innerHTML = '';
-          data.articles.forEach(article => {
-            const d = new Date(article.publishedAt).toLocaleString();
-            sec.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
-          });
+          if (data.articles) {
+            data.articles.forEach(article => {
+              const d = new Date(article.publishedAt).toLocaleString();
+              sec.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
+            });
+          } else {
+            sec.innerHTML = '<p style="text-align:center">No news available</p>';
+          }
         })
-        .catch(_ => document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news</p>');
+        .catch(() => document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news</p>');
     }
 
     function fetchCompanyNews(ticker, elId) {
-      fetch(`https://newsapi.org/v2/everything?q=${ticker}&pageSize=3&sortBy=publishedAt&apiKey=${NEWSAPI_KEY}`)
+      fetch(`https://gnews.io/api/v4/search?q=${ticker}&token=${GNEWS_KEY}&lang=en&max=3`)
         .then(res => res.json())
         .then(data => {
           const c = document.getElementById(elId); c.innerHTML = '';
-          data.articles.forEach(article => {
-            const d = new Date(article.publishedAt).toLocaleString();
-            c.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
-          });
+          if (data.articles) {
+            data.articles.forEach(article => {
+              const d = new Date(article.publishedAt).toLocaleString();
+              c.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${d}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
+            });
+          } else {
+            c.innerHTML = '<p>No news available</p>';
+          }
         })
-        .catch(_ => document.getElementById(elId).innerHTML = '<p>No news available</p>');
+        .catch(() => document.getElementById(elId).innerHTML = '<p>Error loading news</p>');
     }
 
     function fetchStockData(sym, cid) {
@@ -178,7 +186,7 @@
             options: { responsive: true }
           });
         })
-        .catch(err => console.error(err));
+        .catch(err => console.error(`Error fetching ${sym} data`, err));
     }
 
     // Initialize
@@ -194,6 +202,7 @@
   </script>
 </body>
 </html>
+
 
 
 
