@@ -35,6 +35,7 @@
 
   <div id="investing" class="section">
     <h2 class="title">QUICK PICK</h2>
+    <p class="subtitle">Hour Broadcast is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.</p>
     <p class="subtitle">Updated often for short-term gain opportunities.</p>
     <div class="stock">
       <div class="stock-title">American Airlines (NASDAQ:AAL)</div>
@@ -72,7 +73,10 @@
 
   <div id="about" class="section">
     <h2 class="title">About This Site</h2>
-    <p style="text-align:center">This site is created and maintained as part of a personal equity research portfolio, sharing market insights, stock picks, and financial literacy content.</p>
+    <p class="subtitle">Hour Broadcast is an independent investment research site created with the goal of sharing thoughtful, data-driven market analysis. Built as both a personal learning platform and a public archive of research reports, Hour Broadcast exists to track the founder’s evolving perspective on markets, economics, and business strategy.</p>
+    <p class="subtitle">The long-term mission: To go as far as possible in the field of finance and to bring others along for the ride.</p>
+    <p class="subtitle"><strong>Founder: Franklyn Louis</strong><br/>Founder and Lead Analyst Franklyn Louis is a New York based college student with a growing focus on investment research and analysis. His journey began at the age of 16, during the height of the COVID-19 pandemic. Faced with months of uncertainty and boredom, he turned his attention to financial markets. Not just to trade, but to understand. He spent his time researching stocks and identifying potential leaders as the market looked to rebound from one of the sharpest bear markets in recent history.<br/><br/>At 18, he began working in consumer banking, where he discovered a genuine interest in helping people make informed financial decisions. That hands-on experience further fueled his passion for the industry and shaped his career ambitions.<br/><br/>Today, Hour Broadcast reflects his commitment to learn and grow in the industry. The site features original reports and analysis, primarily intended for friends, family, and anyone interested in tracking the founder’s insights.</p>
+    <p class="subtitle">Hour Broadcast is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.</p>
   </div>
 
   <script>
@@ -90,7 +94,6 @@
       const id = location.hash.substring(1) || 'news';
       showSection(id);
     });
-
 
     function fetchGeneralNews() {
       const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&pageSize=25&apiKey=${NEWSAPI_KEY}`;
@@ -166,6 +169,7 @@
   </script>
 </body>
 </html>
+
 
 
 
