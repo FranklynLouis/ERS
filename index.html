@@ -2,65 +2,141 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Equity Research Portfolio</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ke Ke Research</title>
   <style>
-    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #fafafa; color: #111; }
-    nav { background: #111; color: white; padding: 1em; display: flex; justify-content: space-around; }
-    nav a { color: white; text-decoration: none; padding: 0 1em; font-weight: 500; }
-    .section { padding: 2em; display: none; max-width: 1000px; margin: 0 auto; }
-    .active { display: block; }
-    .headline { margin-bottom: 1em; text-align: left; border-bottom: 1px solid #ccc; padding-bottom: 0.5em; }
-    .stock { margin-bottom: 2.5em; }
-    .title { font-size: 2.25em; font-weight: 600; text-align: center; margin-bottom: 1em; text-transform: uppercase; }
-    .stock-title { font-size: 1.25em; font-weight: 500; margin-bottom: 0.5em; }
-    .subtitle { font-size: 1em; color: #666; text-align: center; margin-bottom: 1.5em; }
-    canvas { width: 100% !important; height: 300px !important; margin-bottom: 1em; }
-    p, a { font-size: 0.95em; }
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fafafa;
+      color: #111;
+    }
+    header {
+      background-color: #0a1a2f;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    header img {
+      height: 60px;
+      max-width: 100%;
+      filter: brightness(0) invert(1);
+    }
+    nav {
+      background: #111;
+      color: white;
+      padding: 1em;
+      display: flex;
+      justify-content: space-around;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 0 1em;
+      font-weight: 500;
+    }
+    .section {
+      padding: 2em;
+      display: none;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .active {
+      display: block;
+    }
+    .headline {
+      margin-bottom: 1em;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.5em;
+    }
+    .stock {
+      margin-bottom: 2.5em;
+    }
+    .title {
+      font-size: 2.25em;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 1em;
+      text-transform: uppercase;
+    }
+    .stock-title {
+      font-size: 1.25em;
+      font-weight: 500;
+      margin-bottom: 0.5em;
+    }
+    .subtitle {
+      font-size: 1em;
+      color: #666;
+      text-align: center;
+      margin-bottom: 1.5em;
+    }
+    iframe {
+      width: 100%;
+      height: 300px;
+      border: none;
+    }
+    p, a {
+      font-size: 0.95em;
+    }
+    .disclaimer {
+      background-color: #f8f8f8;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
+  <header>
+    <img src="/mnt/data/e54ea2a5-b6e9-4849-a28d-2b138f4f92f0.png" alt="Ke Ke Research Logo">
+  </header>
+
   <nav>
-    <a href="#news">News</a>
-    <a href="#investing">Investing</a>
-    <a href="#sports">Sports</a>
-    <a href="#about">About</a>
+    <a href="#" onclick="showSection('news')">News</a>
+    <a href="#" onclick="showSection('investing')">Investing</a>
+    <a href="#" onclick="showSection('sports')">Sports</a>
+    <a href="#" onclick="showSection('about')">About</a>
   </nav>
 
-  <div id="news" class="section">
+  <div id="news" class="section active">
     <h2 class="title">Top News Headlines</h2>
-    <div id="news-content">Loading news...</div>
+    <div id="news-content"></div>
   </div>
 
   <div id="investing" class="section">
-    <h2 class="title">QUICK PICK</h2>
+    <div class="disclaimer">
+      <strong>Disclaimer:</strong> Ke Ke Research is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making investment decisions.
+    </div>
+    <h2 class="title">Quick Pick</h2>
     <p class="subtitle">Updated often for short-term gain opportunities.</p>
     <div class="stock">
       <div class="stock-title">American Airlines (NASDAQ:AAL)</div>
-      <canvas id="chart-aal"></canvas>
-      <div id="news-aal">Loading news...</div>
+      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NASDAQ:AAL"></iframe>
+      <div id="news-aal"></div>
       <p>No report available</p>
     </div>
 
-    <h2 class="title">NO LOOK GROWTH</h2>
+    <h2 class="title">No Look Growth</h2>
     <p class="subtitle">Long-term investments with growth potential.</p>
     <div class="stock">
       <div class="stock-title">Expedia Group Inc. (NASDAQ:EXPE)</div>
-      <canvas id="chart-expe"></canvas>
-      <div id="news-expe">Loading news...</div>
+      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NASDAQ:EXPE"></iframe>
+      <div id="news-expe1"></div>
       <p>No report available</p>
     </div>
     <div class="stock">
-      <div class="stock-title">Diversified Energy Company (NYSE:DEC)</div>
-      <canvas id="chart-dec"></canvas>
-      <div id="news-dec">Loading news...</div>
+      <div class="stock-title">Expedia Group Inc. (NASDAQ:EXPE)</div>
+      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NASDAQ:EXPE"></iframe>
+      <div id="news-expe2"></div>
       <p>No report available</p>
     </div>
     <div class="stock">
-      <div class="stock-title">Microsoft Corp. (NASDAQ:MSFT)</div>
-      <canvas id="chart-msft"></canvas>
-      <div id="news-msft">Loading news...</div>
+      <div class="stock-title">Expedia Group Inc. (NASDAQ:EXPE)</div>
+      <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=NASDAQ:EXPE"></iframe>
+      <div id="news-expe3"></div>
       <p>No report available</p>
     </div>
   </div>
@@ -71,107 +147,81 @@
   </div>
 
   <div id="about" class="section">
-    <h2 class="title">About This Site</h2>
-    <p style="text-align:center">This site is created and maintained as part of a personal equity research portfolio, sharing market insights, stock picks, and financial literacy content.</p>
+    <h2 class="title">About Ke Ke Research</h2>
+    <p><strong>Ke Ke Research</strong> is an independent investment research site founded with the goal of sharing thoughtful, data-driven market analysis. Built as both a personal learning platform and a public archive of research reports, Ke Ke Research exists to track the founder’s evolving perspective on markets, economics, and business strategy.</p>
+    <p>Founder and Lead Analyst <strong>Franklyn Louis</strong> is a college student based in <strong>New York</strong>, with a growing focus on <strong>quantitative research and equity analysis</strong>. His journey began at the age of <strong>16</strong>, during the height of the COVID-19 pandemic. Faced with months of uncertainty and boredom, he turned his attention to financial markets — not just to trade, but to understand. He spent his time researching stocks and identifying potential leaders as the market looked to rebound from one of the sharpest bear markets in recent memory.</p>
+    <p>At <strong>18</strong>, he began working in <strong>consumer banking</strong>, where he discovered a genuine interest in helping people make informed financial decisions. That hands-on experience further fueled his passion for the industry and shaped his career ambitions.</p>
+    <p>Today, <strong>Ke Ke Research</strong> reflects his commitment to continual learning and growth. The site features original reports, commentary, and analysis, primarily intended for friends, family, and anyone interested in tracking the founder’s development in the financial services and investment world.</p>
+    <p><strong>The long-term mission: to go as far as possible in the field of finance, and to bring others along for the ride.</strong></p>
+    <div class="disclaimer" style="margin-top: 2rem; border-top: 1px solid #ddd;">
+      <strong>Disclaimer:</strong> Ke Ke Research is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making investment decisions.
+    </div>
   </div>
 
   <script>
-    // API Keys and proxy
-    const API_KEY = 'JAKAWZBJIWZVSKZ1';
-    const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
-    const PROXY = 'https://api.allorigins.win/raw?url=';
-
-    // Toggle visibility based on hash
     function showSection(sectionId) {
       document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-      const target = document.getElementById(sectionId);
-      if (target) target.classList.add('active');
+      document.getElementById(sectionId).classList.add('active');
     }
 
-    // Handle hash changes
-    window.addEventListener('hashchange', () => {
-      const id = location.hash.substring(1) || 'news';
-      showSection(id);
-    });
-
-    // Fetch general news (10 articles)
     function fetchGeneralNews() {
-      const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&pageSize=10&apiKey=${NEWSAPI_KEY}`;
-      fetch(PROXY + encodeURIComponent(url))
-        .then(r => r.json())
+      fetch(`https://corsproxy.io/?` + encodeURIComponent(`https://newsdata.io/api/1/news?apikey=12f592f2767996f7f0457e04181bc33a&country=us&language=en&category=business`))
+        .then(response => response.json())
         .then(data => {
-          const container = document.getElementById('news-content');
-          container.innerHTML = '';
-          if (data.articles && data.articles.length) {
-            data.articles.forEach(article => {
-              const date = new Date(article.publishedAt).toLocaleString();
-              container.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
+          const newsSection = document.getElementById('news-content');
+          newsSection.innerHTML = '';
+          if (data && data.results && Array.isArray(data.results)) {
+            data.results.slice(0, 10).forEach(article => {
+              const el = document.createElement('div');
+              el.className = 'headline';
+              const date = new Date(article.pubDate).toLocaleString();
+              el.innerHTML = `<strong>${article.source_id}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.link}" target="_blank">Read full article</a>`;
+              newsSection.appendChild(el);
             });
           } else {
-            container.innerHTML = '<p style="text-align:center">No news available</p>';
+            newsSection.innerHTML = '<p style="text-align:center">No news available.</p>';
           }
         })
-        .catch(() => {
-          document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news</p>';
+        .catch(error => {
+          console.error('News API error:', error);
+          document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news.</p>';
         });
     }
 
-    // Fetch company news (2 articles)
     function fetchCompanyNews(ticker, elementId) {
-      const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(ticker)}&pageSize=2&sortBy=publishedAt&apiKey=${NEWSAPI_KEY}`;
-      fetch(PROXY + encodeURIComponent(url))
-        .then(r => r.json())
+      fetch(`https://corsproxy.io/?` + encodeURIComponent(`https://newsdata.io/api/1/news?apikey=12f592f2767996f7f0457e04181bc33a&country=us&language=en&q=${ticker}`))
+        .then(response => response.json())
         .then(data => {
           const container = document.getElementById(elementId);
           container.innerHTML = '';
-          if (data.articles && data.articles.length) {
-            data.articles.forEach(article => {
-              const date = new Date(article.publishedAt).toLocaleString();
-              container.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
+          if (data && data.results && Array.isArray(data.results)) {
+            data.results.slice(0, 2).forEach(news => {
+              const item = document.createElement('div');
+              item.className = 'headline';
+              const date = new Date(news.pubDate).toLocaleString();
+              item.innerHTML = `<strong>${news.source_id}: ${news.title}</strong><br><em>${date}</em><br><a href="${news.link}" target="_blank">Read full article</a>`;
+              container.appendChild(item);
             });
           } else {
-            container.innerHTML = '<p style="text-align:center">No news available</p>';
+            container.innerHTML = '<p>No news available.</p>';
           }
         })
-        .catch(() => {
-          document.getElementById(elementId).innerHTML = '<p style="text-align:center">Error loading news</p>';
+        .catch(error => {
+          const container = document.getElementById(elementId);
+          container.innerHTML = '<p>Error loading news.</p>';
+          console.error('Company News API error:', error);
         });
     }
 
-    // Fetch and render stock price chart
-    function fetchStockData(symbol, canvasId) {
-      fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`)
-        .then(r => r.json())
-        .then(data => {
-          const ts = data['Time Series (Daily)'];
-          const dates = Object.keys(ts).slice(0, 30).reverse();
-          const prices = dates.map(d => parseFloat(ts[d]['4. close']));
-          new Chart(document.getElementById(canvasId), {
-            type: 'line',
-            data: { labels: dates, datasets: [{ label: `${symbol} Price`, data: prices, borderColor: 'blue', backgroundColor: 'rgba(0,0,255,0.1)', tension: 0.2 }] },
-            options: { responsive: true }
-          });
-        })
-        .catch(e => console.error(`Error fetching ${symbol}`, e));
-    }
-
-    // Initialize on load
-    document.addEventListener('DOMContentLoaded', () => {
-      const initial = location.hash.substring(1) || 'news';
-      showSection(initial);
-      fetchGeneralNews();
-      fetchCompanyNews('AAL', 'news-aal');
-      fetchCompanyNews('EXPE', 'news-expe');
-      fetchCompanyNews('DEC', 'news-dec');
-      fetchCompanyNews('MSFT', 'news-msft');
-      fetchStockData('AAL', 'chart-aal');
-      fetchStockData('EXPE', 'chart-expe');
-      fetchStockData('DEC', 'chart-dec');
-      fetchStockData('MSFT', 'chart-msft');
-    });
+    fetchGeneralNews();
+    fetchCompanyNews('AAL', 'news-aal');
+    fetchCompanyNews('EXPE', 'news-expe1');
+    fetchCompanyNews('EXPE', 'news-expe2');
+    fetchCompanyNews('EXPE', 'news-expe3');
   </script>
 </body>
 </html>
+
 
 
 
