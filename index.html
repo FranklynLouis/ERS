@@ -43,7 +43,7 @@
       <p>No report available</p>
     </div>
 
-    <h2 class="title">NO LOOK GROWTH</h2>
+    <h2 class="title">BLIND GROWTH</h2>
     <p class="subtitle">Long-term investments with growth potential.</p>
     <div class="stock">
       <div class="stock-title">Expedia Group Inc. (NASDAQ:EXPE)</div>
@@ -66,7 +66,7 @@
   </div>
 
   <div id="sports" class="section">
-    <h2 class="title">Sports Highlights</h2>
+    <h2 class="title">Sports </h2>
     <p class="subtitle">Coming Soon: Live scores, player stats, and betting insights.</p>
   </div>
 
@@ -76,27 +76,24 @@
   </div>
 
   <script>
-    // API Keys and proxy
     const API_KEY = 'JAKAWZBJIWZVSKZ1';
     const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
     const PROXY = 'https://api.allorigins.win/raw?url=';
 
-    // Toggle visibility based on hash
     function showSection(sectionId) {
       document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
       const target = document.getElementById(sectionId);
       if (target) target.classList.add('active');
     }
 
-    // Handle hash changes
     window.addEventListener('hashchange', () => {
       const id = location.hash.substring(1) || 'news';
       showSection(id);
     });
 
-    // Fetch general news (10 articles)
+
     function fetchGeneralNews() {
-      const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&pageSize=10&apiKey=${NEWSAPI_KEY}`;
+      const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&pageSize=25&apiKey=${NEWSAPI_KEY}`;
       fetch(PROXY + encodeURIComponent(url))
         .then(r => r.json())
         .then(data => {
@@ -116,7 +113,6 @@
         });
     }
 
-    // Fetch company news (2 articles)
     function fetchCompanyNews(ticker, elementId) {
       const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(ticker)}&pageSize=2&sortBy=publishedAt&apiKey=${NEWSAPI_KEY}`;
       fetch(PROXY + encodeURIComponent(url))
@@ -138,7 +134,6 @@
         });
     }
 
-    // Fetch and render stock price chart
     function fetchStockData(symbol, canvasId) {
       fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`)
         .then(r => r.json())
@@ -155,7 +150,6 @@
         .catch(e => console.error(`Error fetching ${symbol}`, e));
     }
 
-    // Initialize on load
     document.addEventListener('DOMContentLoaded', () => {
       const initial = location.hash.substring(1) || 'news';
       showSection(initial);
@@ -172,6 +166,7 @@
   </script>
 </body>
 </html>
+
 
 
 
