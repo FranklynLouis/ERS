@@ -31,7 +31,7 @@
     <h2 class="title">NEWS HEADLINES</h2>
     <div id="news-content">Loading news...</div>
     <h2 class="title">SPORTS</h2>
-    <div id="sports-content">Loading sports data...</div>
+    <div id="sports-content">Loading sports...</div>
   </div>
 
   <div id="investing" class="section">
@@ -44,7 +44,6 @@
       <div id="news-aal">Loading news...</div>
       <p>No report available</p>
     </div>
-
     <h2 class="title">BLIND GROWTH</h2>
     <p class="subtitle">Long-term investments with growth potential.</p>
     <div class="stock">
@@ -65,14 +64,13 @@
       <div id="news-msft">Loading news...</div>
       <p>No report available</p>
     </div>
+    <p class="subtitle" style="color: #111; font-weight: bold;">Hour Broadcast is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.</p>
   </div>
 
   <div id="about" class="section">
     <h2 class="title">About Hour Broadcast</h2>
     <p class="subtitle">Hour Broadcast is an independent investment research site created with the goal of sharing thoughtful, data-driven market analysis. Built as both a personal learning platform and a public archive of research reports, Hour Broadcast exists to track the founder’s evolving perspective on markets, economics, and business strategy.</p>
     <p class="subtitle"><strong style="color: #111;">The long-term mission: To go as far as possible in the field of finance and to bring others along for the ride.</strong></p>
-
-    <h3 class="subtitle" style="font-weight: bold; color: #111; margin-top: 1.5em;"></h3>
     <p class="subtitle" style="color: #666;">
       Founder and Lead Analyst <strong style="color: #111;">Franklyn Louis</strong> is a New York based college student with a growing focus on investment research and analysis. His journey began at the age of 16 during the height of the COVID-19 pandemic. Faced with months of uncertainty and boredom, he turned his attention to financial markets. Not just to trade, but to understand. He spent his time researching stocks and identifying potential leaders as the market looked to rebound from one of the sharpest bear markets in recent history.
       <br><br>
@@ -82,6 +80,149 @@
     </p>
     <p class="subtitle" style="color: #111; font-weight: bold;">Hour Broadcast is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.</p>
   </div>
+
+  <script>
+    const API_KEY = 'JAKAWZBJIWZVSKZ1';
+    const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
+    const PROXY = 'https://api.allorigins.win/raw?url=';
+
+    function showSection(sectionId) {
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      const target = document.getElementById(sectionId);
+      if (target) target.classList.add('active');
+    }
+
+    window.addEventListener('hashchange', () => {
+      const id = location.hash.substring(1) || 'news';
+      showSection(id);
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const initial = location.hash.substring(1) || 'news';
+      showSection(initial);
+      fetchGeneralNews();
+      fetchCompanyNews('AAL', 'news-aal');
+      fetchCompanyNews('EXPE', 'news-expe');
+      fetchCompanyNews('DEC', 'news-dec');
+      fetchCompanyNews('MSFT', 'news-msft');
+      fetchStockData('AAL', 'chart-aal');
+      fetchStockData('EXPE', 'chart-expe');
+      fetchStockData('DEC', 'chart-dec');
+      fetchStockData('MSFT', 'chart-msft');
+      fetchAllSports();
+    });
+
+    function fetchGeneralNews() {
+      const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&pageSize=25&apiKey=${NEWSAPI_KEY}`;
+      fetch(PROXY + encodeURIComponent(url))
+        .then(r => r.json())
+        .then(data => {
+          const container = document.getElementById('news-content');
+          container.innerHTML = '';
+          if (data.articles && data.articles.length) {
+            data.articles.forEach(article => {
+              const date = new Date(article.publishedAt).toLocaleString();
+              container.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
+            });
+          } else {
+            container.innerHTML = '<p style="text-align:center">No news available</p>';
+          }
+        })
+        .catch(() => {
+          document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news</p>';
+        });
+    }
+
+    function fetchCompanyNews(ticker, elementId) {
+      const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(ticker)}&pageSize=2&sortBy=publishedAt&apiKey=${NEWSAPI_KEY}`;
+      fetch(PROXY + encodeURIComponent(url))
+        .then(r => r.json())
+        .then(data => {
+          const container = document.getElementById(elementId);
+          container.innerHTML = '';
+          if (data.articles && data.articles.length) {
+            data.articles.forEach(article => {
+              const date = new Date(article.publishedAt).toLocaleString();
+              container.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
+            });
+          } else {
+            container.innerHTML = '<p style="text-align:center">No news available</p>';
+          }
+        })
+        .catch(() => {
+          document.getElementById(elementId).innerHTML = '<p style="text-align:center">Error loading news</p>';
+        });
+    }
+
+    function fetchStockData(symbol, canvasId) {
+      fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`)
+        .then(r => r.json())
+        .then(data => {
+          const ts = data['Time Series (Daily)'];
+          const dates = Object.keys(ts).slice(0, 30).reverse();
+          const prices = dates.map(d => parseFloat(ts[d]['4. close']));
+          new Chart(document.getElementById(canvasId), {
+            type: 'line',
+            data: {
+              labels: dates,
+              datasets: [{ label: `${symbol} Price`, data: prices, borderColor: 'blue', backgroundColor: 'rgba(0,0,255,0.1)', tension: 0.2 }]
+            },
+            options: { responsive: true }
+          });
+        })
+        .catch(e => console.error(`Error fetching ${symbol}`, e));
+    }
+
+    function fetchAllSports() {
+      const sports = [
+        { league: 'nba', url: 'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard' },
+        { league: 'nfl', url: 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard' },
+        { league: 'mlb', url: 'https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard' },
+        { league: 'soccer', url: 'https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard' }
+      ];
+
+      const container = document.getElementById('sports-content');
+      container.innerHTML = '';
+
+      sports.forEach(({ league, url }) => {
+        fetch(url)
+          .then(r => r.json())
+          .then(data => {
+            const events = data.events || [];
+            if (events.length === 0) return;
+            const leagueHeader = document.createElement('h3');
+            leagueHeader.textContent = league.toUpperCase();
+            leagueHeader.style.marginTop = '1em';
+            container.appendChild(leagueHeader);
+
+            events.slice(0, 3).forEach(game => {
+              const name = game.name;
+              const date = new Date(game.date);
+              const time = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+              const day = date.toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit' });
+              const status = game.status?.type?.description || 'TBD';
+              const competitors = game.competitions?.[0]?.competitors || [];
+              const scores = competitors.map(c => c.score);
+              const matchup = `${name} | ${day} ${time} EST`;
+              const score = scores.length === 2 ? `Score: ${scores[0]} - ${scores[1]}` : '';
+              const div = document.createElement('div');
+              div.className = 'headline';
+              div.innerHTML = `<strong>${matchup}</strong><br>${score} | Status: ${status}`;
+              container.appendChild(div);
+            });
+          })
+          .catch(() => {
+            const error = document.createElement('p');
+            error.style.textAlign = 'center';
+            error.textContent = `Error loading ${league.toUpperCase()} data.`;
+            container.appendChild(error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>
+
 
 
 
