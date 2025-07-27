@@ -32,7 +32,7 @@
     <div id="news-content">Loading news...</div>
 
     <h2 class="title" style="margin-top: 3em; text-align: center;">SPORTS</h2>
-    <div id="sports-article" class="headline" style="text-align: left;">Loading sports article...</div>
+    <div id="sports-content" style="text-align: center;">Loading sports data...</div>
   </div>
 
   <div id="investing" class="section">
@@ -87,6 +87,7 @@
   <script>
     const API_KEY = 'JAKAWZBJIWZVSKZ1';
     const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
+    const SPORTS_API_KEY = '4ceff245af2e82df6779e6f887c50740';
     const PROXY = 'https://api.allorigins.win/raw?url=';
 
     function showSection(sectionId) {
@@ -118,25 +119,6 @@
         })
         .catch(() => {
           document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news</p>';
-        });
-    }
-
-    function fetchSportsNews() {
-      const url = `https://newsapi.org/v2/everything?q="NBA" OR "NFL" OR "MLB" OR "Premier League"&sortBy=publishedAt&pageSize=1&apiKey=${NEWSAPI_KEY}`;
-      fetch(PROXY + encodeURIComponent(url))
-        .then(r => r.json())
-        .then(data => {
-          const container = document.getElementById('sports-article');
-          if (data.articles && data.articles.length) {
-            const article = data.articles[0];
-            const date = new Date(article.publishedAt).toLocaleString();
-            container.innerHTML = `<strong>${article.title}</strong><br><em>${date}</em><br>${article.description || ''}<br><a href="${article.url}" target="_blank">Read full article</a>`;
-          } else {
-            container.innerHTML = '<p>No sports news available.</p>';
-          }
-        })
-        .catch(() => {
-          document.getElementById('sports-article').innerHTML = '<p>Error loading sports news.</p>';
         });
     }
 
@@ -177,11 +159,18 @@
         .catch(e => console.error(`Error fetching ${symbol}`, e));
     }
 
+    function fetchSportsData() {
+      const sportsContainer = document.getElementById('sports-content');
+      fetch(`/scripts/sports-fetch.js`)
+        .then(r => r.text())
+        .then(html => { sportsContainer.innerHTML = html; })
+        .catch(() => { sportsContainer.innerHTML = '<p>Error loading sports data</p>'; });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       const initial = location.hash.substring(1) || 'news';
       showSection(initial);
       fetchGeneralNews();
-      fetchSportsNews();
       fetchCompanyNews('AAL', 'news-aal');
       fetchCompanyNews('EXPE', 'news-expe');
       fetchCompanyNews('DEC', 'news-dec');
@@ -190,6 +179,7 @@
       fetchStockData('EXPE', 'chart-expe');
       fetchStockData('DEC', 'chart-dec');
       fetchStockData('MSFT', 'chart-msft');
+      fetchSportsData();
     });
   </script>
 </body>
