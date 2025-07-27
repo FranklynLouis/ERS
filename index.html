@@ -35,6 +35,7 @@
 
   <div id="investing" class="section">
     <h2 class="title">QUICK PICK</h2>
+    <p class="subtitle" style="color: #111; font-weight: bold;">Hour Broadcast is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.</p>
     <p class="subtitle">Updated often for short-term gain opportunities.</p>
     <div class="stock">
       <div class="stock-title">American Airlines (NASDAQ:AAL)</div>
@@ -68,18 +69,16 @@
 
   <div id="sports" class="section">
     <h2 class="title">Sports</h2>
-    <p class="subtitle">Live scores or upcoming match schedules across leagues.</p>
-    <div id="nba-score" class="subtitle">Loading NBA info...</div>
-    <div id="nfl-score" class="subtitle">Loading NFL info...</div>
-    <div id="mlb-score" class="subtitle">Loading MLB info...</div>
-    <div id="soccer-score" class="subtitle">Loading Soccer info...</div>
+    <div class="subtitle" id="nba-score">Loading NBA data...</div>
+    <div class="subtitle" id="nfl-score">Loading NFL data...</div>
+    <div class="subtitle" id="mlb-score">Loading MLB data...</div>
+    <div class="subtitle" id="soccer-score">Loading Soccer data...</div>
   </div>
 
   <div id="about" class="section">
     <h2 class="title">About Hour Broadcast</h2>
     <p class="subtitle">Hour Broadcast is an independent investment research site created with the goal of sharing thoughtful, data-driven market analysis. Built as both a personal learning platform and a public archive of research reports, Hour Broadcast exists to track the founder’s evolving perspective on markets, economics, and business strategy.</p>
     <p class="subtitle"><strong style="color: #111;">The long-term mission: To go as far as possible in the field of finance and to bring others along for the ride.</strong></p>
-
     <h3 class="subtitle" style="font-weight: bold; color: #111; margin-top: 1.5em;"></h3>
     <p class="subtitle" style="color: #666;">
       Founder and Lead Analyst <strong style="color: #111;">Franklyn Louis</strong> is a New York based college student with a growing focus on investment research and analysis. His journey began at the age of 16 during the height of the COVID-19 pandemic. Faced with months of uncertainty and boredom, he turned his attention to financial markets. Not just to trade, but to understand. He spent his time researching stocks and identifying potential leaders as the market looked to rebound from one of the sharpest bear markets in recent history.
@@ -91,11 +90,11 @@
     <p class="subtitle" style="color: #111; font-weight: bold;">Hour Broadcast is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.</p>
   </div>
 
-<script>
+  <script>
     const API_KEY = 'JAKAWZBJIWZVSKZ1';
     const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
-    const PROXY = 'https://api.allorigins.win/raw?url=';
     const SPORTS_API_KEY = '4ceff245af2e82df6779e6f887c50740';
+    const PROXY = 'https://api.allorigins.win/raw?url=';
 
     function showSection(sectionId) {
       document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
@@ -106,6 +105,24 @@
     window.addEventListener('hashchange', () => {
       const id = location.hash.substring(1) || 'news';
       showSection(id);
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const initial = location.hash.substring(1) || 'news';
+      showSection(initial);
+      fetchGeneralNews();
+      fetchCompanyNews('AAL', 'news-aal');
+      fetchCompanyNews('EXPE', 'news-expe');
+      fetchCompanyNews('DEC', 'news-dec');
+      fetchCompanyNews('MSFT', 'news-msft');
+      fetchStockData('AAL', 'chart-aal');
+      fetchStockData('EXPE', 'chart-expe');
+      fetchStockData('DEC', 'chart-dec');
+      fetchStockData('MSFT', 'chart-msft');
+      fetchSport('nba', 'nba-score');
+      fetchSport('nfl', 'nfl-score');
+      fetchSport('mlb', 'mlb-score');
+      fetchSoccer('soccer-score');
     });
 
     function fetchGeneralNews() {
@@ -159,35 +176,52 @@
           const prices = dates.map(d => parseFloat(ts[d]['4. close']));
           new Chart(document.getElementById(canvasId), {
             type: 'line',
-            data: { labels: dates, datasets: [{ label: `${symbol} Price`, data: prices, borderColor: 'blue', backgroundColor: 'rgba(0,0,255,0.1)', tension: 0.2 }] },
+            data: {
+              labels: dates,
+              datasets: [{
+                label: `${symbol} Price`,
+                data: prices,
+                borderColor: 'blue',
+                backgroundColor: 'rgba(0,0,255,0.1)',
+                tension: 0.2
+              }]
+            },
             options: { responsive: true }
           });
         })
         .catch(e => console.error(`Error fetching ${symbol}`, e));
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const initial = location.hash.substring(1) || 'news';
-      showSection(initial);
-      fetchGeneralNews();
-      fetchCompanyNews('AAL', 'news-aal');
-      fetchCompanyNews('EXPE', 'news-expe');
-      fetchCompanyNews('DEC', 'news-dec');
-      fetchCompanyNews('MSFT', 'news-msft');
-      fetchStockData('AAL', 'chart-aal');
-      fetchStockData('EXPE', 'chart-expe');
-      fetchStockData('DEC', 'chart-dec');
-      fetchStockData('MSFT', 'chart-msft');
+    function fetchSport(league, elementId) {
+      fetch(`https://v1.api-sports.io/${league}/games?date=latest`, {
+        headers: { 'x-apisports-key': SPORTS_API_KEY }
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById(elementId).innerText = `${league.toUpperCase()} ➤ ${data.response[0]?.teams.home.name || 'No games'} vs ${data.response[0]?.teams.away.name || ''}`;
+      })
+      .catch(() => {
+        document.getElementById(elementId).innerText = `${league.toUpperCase()} ➤ No data available.`;
+      });
+    }
 
-      // Placeholder text for sports
-      document.getElementById('nba-score').textContent = 'NBA data loading...';
-      document.getElementById('nfl-score').textContent = 'NFL data loading...';
-      document.getElementById('mlb-score').textContent = 'MLB data loading...';
-      document.getElementById('soccer-score').textContent = 'Soccer data loading...';
-    });
-</script>
+    function fetchSoccer(elementId) {
+      fetch("https://v3.football.api-sports.io/fixtures?league=39&season=2024&next=1", {
+        headers: { 'x-apisports-key': SPORTS_API_KEY }
+      })
+      .then(r => r.json())
+      .then(data => {
+        const f = data.response[0];
+        document.getElementById(elementId).innerText = `SOCCER ➤ ${f.teams.home.name} vs ${f.teams.away.name} — ${f.fixture.date.split("T")[0]}`;
+      })
+      .catch(() => {
+        document.getElementById(elementId).innerText = "SOCCER ➤ No match data available.";
+      });
+    }
+  </script>
 </body>
 </html>
+
 
 
 
