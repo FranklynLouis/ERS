@@ -159,6 +159,20 @@
         .catch(e => console.error(`Error fetching ${symbol}`, e));
     }
 
+    function fetchSportsData() {
+      const url = `https://v3.football.api-sports.io/status`;
+      fetch(url, {
+        headers: { 'x-apisports-key': SPORTAPI_KEY }
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('sports-content').innerHTML = `<p>${data.response.account.firstname ? 'API is working.' : 'API connected.'}</p>`;
+      })
+      .catch(() => {
+        document.getElementById('sports-content').innerHTML = '<p>Error loading sports data</p>';
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       const initial = location.hash.substring(1) || 'news';
       showSection(initial);
@@ -171,13 +185,11 @@
       fetchStockData('EXPE', 'chart-expe');
       fetchStockData('DEC', 'chart-dec');
       fetchStockData('MSFT', 'chart-msft');
+      fetchSportsData();
     });
   </script>
 </body>
 </html>
-
-
-
 
 
 
