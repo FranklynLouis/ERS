@@ -4,26 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Equity Research Portfolio</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js">function fetchSportsNews() {
-      const url = `https://newsapi.org/v2/everything?q=(NBA OR NFL OR MLB OR "Premier League")&sortBy=publishedAt&pageSize=1&apiKey=${NEWSAPI_KEY}`;
-      fetch(PROXY + encodeURIComponent(url))
-        .then(r => r.json())
-        .then(data => {
-          const container = document.getElementById('sports-article');
-          container.innerHTML = '';
-          if (data.articles && data.articles.length) {
-            const article = data.articles[0];
-            const date = new Date(article.publishedAt).toLocaleString();
-            container.innerHTML = `<strong>${article.source.name}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a>`;
-          } else {
-            container.innerHTML = '<p style="text-align:center">No sports news available</p>';
-          }
-        })
-        .catch(() => {
-          document.getElementById('sports-article').innerHTML = '<p style="text-align:center">Error loading sports news</p>';
-        });
-    }
-    </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #fafafa; color: #111; }
     nav { background: #111; color: white; padding: 1em; display: flex; justify-content: space-around; }
@@ -51,13 +32,10 @@
     <div id="news-content">Loading news...</div>
 
     <h2 class="title" style="margin-top: 3em; text-align: center;">SPORTS</h2>
-    <div id="sports-content" style="text-align: center;">
-      
-    </div>
-  <div id="sports-article" class="headline" style="margin-top: 2em; text-align: left;">Loading sports article...</div>
+    <div id="sports-article" class="headline" style="text-align: left;">Loading sports article...</div>
+  </div>
 
-</div>
-<div id="investing" class="section">
+  <div id="investing" class="section">
     <h2 class="title">QUICK PICK</h2>
     <p class="subtitle">Updated often for short-term gain opportunities.</p>
     <div class="stock">
@@ -143,8 +121,27 @@
         });
     }
 
+    function fetchSportsNews() {
+      const url = `https://newsapi.org/v2/everything?q="NBA" OR "NFL" OR "MLB" OR "Premier League"&sortBy=publishedAt&pageSize=1&apiKey=${NEWSAPI_KEY}`;
+      fetch(PROXY + encodeURIComponent(url))
+        .then(r => r.json())
+        .then(data => {
+          const container = document.getElementById('sports-article');
+          if (data.articles && data.articles.length) {
+            const article = data.articles[0];
+            const date = new Date(article.publishedAt).toLocaleString();
+            container.innerHTML = `<strong>${article.title}</strong><br><em>${date}</em><br>${article.description || ''}<br><a href="${article.url}" target="_blank">Read full article</a>`;
+          } else {
+            container.innerHTML = '<p>No sports news available.</p>';
+          }
+        })
+        .catch(() => {
+          document.getElementById('sports-article').innerHTML = '<p>Error loading sports news.</p>';
+        });
+    }
+
     function fetchCompanyNews(ticker, elementId) {
-      const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(ticker)}&pageSize=15&sortBy=publishedAt&apiKey=${NEWSAPI_KEY}`;
+      const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(ticker)}&pageSize=2&sortBy=publishedAt&apiKey=${NEWSAPI_KEY}`;
       fetch(PROXY + encodeURIComponent(url))
         .then(r => r.json())
         .then(data => {
@@ -181,10 +178,10 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      fetchSportsNews();
       const initial = location.hash.substring(1) || 'news';
       showSection(initial);
       fetchGeneralNews();
+      fetchSportsNews();
       fetchCompanyNews('AAL', 'news-aal');
       fetchCompanyNews('EXPE', 'news-expe');
       fetchCompanyNews('DEC', 'news-dec');
@@ -197,7 +194,6 @@
   </script>
 </body>
 </html>
-
 
 
 
