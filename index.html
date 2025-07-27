@@ -160,17 +160,40 @@
     }
 
     function fetchSportsData() {
-      const url = `https://v3.football.api-sports.io/status`;
-      fetch(url, {
-        headers: { 'x-apisports-key': SPORTAPI_KEY }
-      })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('sports-content').innerHTML = `<p>${data.response.account.firstname ? 'API is working.' : 'API connected.'}</p>`;
-      })
-      .catch(() => {
-        document.getElementById('sports-content').innerHTML = '<p>Error loading sports data</p>';
-      });
+      const url = `https://v3.football.api-sports.io/fixtures?next=20`;
+      fetch(url, { headers: { 'x-apisports-key': SPORTAPI_KEY }})
+        .then(res => res.json())
+        .then(data => {
+          const events = data.response.map(fix => {
+            return {
+              league: fix.league.name,
+              date: new Date(fix.fixture.date),
+              home: fix.teams.home.name,
+              away: fix.teams.away.name,
+              score: `${fix.goals.home} - ${fix.goals.away}`,
+              status: fix.fixture.status.short,
+            };
+          }).sort((a, b) => b.date - a.date);
+
+          const grouped = events.reduce((acc, e) => {
+            acc[e.league] = acc[e.league] || [];
+            acc[e.league].push(e);
+            return acc;
+          }, {});
+
+          let html = '';
+          Object.entries(grouped).forEach(([league, games]) => {
+            html += `<h3 style='margin-top:2em'>${league.toUpperCase()}</h3>`;
+            games.forEach(g => {
+              html += `<div><strong>${g.away} at ${g.home}</strong> | ${g.date.toLocaleString('en-US', { timeZone: 'America/New_York' })}<br>Score: ${g.score} | Status: ${g.status}</div><br>`;
+            });
+          });
+
+          document.getElementById('sports-content').innerHTML = html || 'No games found';
+        })
+        .catch(() => {
+          document.getElementById('sports-content').innerHTML = '<p>Error loading sports data</p>';
+        });
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -190,7 +213,6 @@
   </script>
 </body>
 </html>
-
 
 
 
