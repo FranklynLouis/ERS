@@ -35,7 +35,6 @@
 
   <div id="investing" class="section">
     <h2 class="title">QUICK PICK</h2>
-    <p class="subtitle" style="color: #111; font-weight: bold;">Hour Broadcast is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.</p>
     <p class="subtitle">Updated often for short-term gain opportunities.</p>
     <div class="stock">
       <div class="stock-title">American Airlines (NASDAQ:AAL)</div>
@@ -64,11 +63,16 @@
       <div id="news-msft">Loading news...</div>
       <p>No report available</p>
     </div>
+    <p class="subtitle" style="color: #111; font-weight: bold;">Hour Broadcast is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.</p>
   </div>
 
   <div id="sports" class="section">
-    <h2 class="title">Sports </h2>
-    <p class="subtitle">Coming Soon: Live scores, player stats, and betting insights.</p>
+    <h2 class="title">Sports</h2>
+    <p class="subtitle">Live scores or upcoming match schedules across leagues.</p>
+    <div id="nba-score" class="subtitle">Loading NBA info...</div>
+    <div id="nfl-score" class="subtitle">Loading NFL info...</div>
+    <div id="mlb-score" class="subtitle">Loading MLB info...</div>
+    <div id="soccer-score" class="subtitle">Loading Soccer info...</div>
   </div>
 
   <div id="about" class="section">
@@ -86,10 +90,12 @@
     </p>
     <p class="subtitle" style="color: #111; font-weight: bold;">Hour Broadcast is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.</p>
   </div>
+
 <script>
     const API_KEY = 'JAKAWZBJIWZVSKZ1';
     const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
     const PROXY = 'https://api.allorigins.win/raw?url=';
+    const SPORTS_API_KEY = '4ceff245af2e82df6779e6f887c50740';
 
     function showSection(sectionId) {
       document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
@@ -172,10 +178,17 @@
       fetchStockData('EXPE', 'chart-expe');
       fetchStockData('DEC', 'chart-dec');
       fetchStockData('MSFT', 'chart-msft');
+
+      // Placeholder text for sports
+      document.getElementById('nba-score').textContent = 'NBA data loading...';
+      document.getElementById('nfl-score').textContent = 'NFL data loading...';
+      document.getElementById('mlb-score').textContent = 'MLB data loading...';
+      document.getElementById('soccer-score').textContent = 'Soccer data loading...';
     });
-  </script>
+</script>
 </body>
 </html>
+
 
 
 
