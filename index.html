@@ -35,6 +35,7 @@
 
   <div id="investing" class="section">
     <h2 class="title">QUICK PICK</h2>
+    <p class="subtitle" style="color: #111; font-weight: bold;">Hour Broadcast is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.</p>
     <p class="subtitle">Updated often for short-term gain opportunities.</p>
     <div class="stock">
       <div class="stock-title">American Airlines (NASDAQ:AAL)</div>
@@ -63,18 +64,18 @@
       <div id="news-msft">Loading news...</div>
       <p>No report available</p>
     </div>
-    <p class="subtitle" style="color: #111; font-weight: bold;">Hour Broadcast is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.</p>
   </div>
 
   <div id="sports" class="section">
     <h2 class="title">Sports</h2>
-    <div id="sports-content">Loading sports scores...</div>
+    <div id="sports-content">Loading sports data...</div>
   </div>
 
   <div id="about" class="section">
     <h2 class="title">About Hour Broadcast</h2>
     <p class="subtitle">Hour Broadcast is an independent investment research site created with the goal of sharing thoughtful, data-driven market analysis. Built as both a personal learning platform and a public archive of research reports, Hour Broadcast exists to track the founder’s evolving perspective on markets, economics, and business strategy.</p>
     <p class="subtitle"><strong style="color: #111;">The long-term mission: To go as far as possible in the field of finance and to bring others along for the ride.</strong></p>
+
     <h3 class="subtitle" style="font-weight: bold; color: #111; margin-top: 1.5em;"></h3>
     <p class="subtitle" style="color: #666;">
       Founder and Lead Analyst <strong style="color: #111;">Franklyn Louis</strong> is a New York based college student with a growing focus on investment research and analysis. His journey began at the age of 16 during the height of the COVID-19 pandemic. Faced with months of uncertainty and boredom, he turned his attention to financial markets. Not just to trade, but to understand. He spent his time researching stocks and identifying potential leaders as the market looked to rebound from one of the sharpest bear markets in recent history.
@@ -89,7 +90,6 @@
 <script>
   const API_KEY = 'JAKAWZBJIWZVSKZ1';
   const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
-  const SPORTS_API_KEY = '4ceff245af2e82df6779e6f887c50740';
   const PROXY = 'https://api.allorigins.win/raw?url=';
 
   function showSection(sectionId) {
@@ -124,91 +124,48 @@
       });
   }
 
-  function fetchCompanyNews(ticker, elementId) {
-    const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(ticker)}&pageSize=2&sortBy=publishedAt&apiKey=${NEWSAPI_KEY}`;
-    fetch(PROXY + encodeURIComponent(url))
-      .then(r => r.json())
-      .then(data => {
-        const container = document.getElementById(elementId);
-        container.innerHTML = '';
-        if (data.articles && data.articles.length) {
-          data.articles.forEach(article => {
-            const date = new Date(article.publishedAt).toLocaleString();
-            container.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
-          });
-        } else {
-          container.innerHTML = '<p style="text-align:center">No news available</p>';
-        }
-      })
-      .catch(() => {
-        document.getElementById(elementId).innerHTML = '<p style="text-align:center">Error loading news</p>';
-      });
-  }
-
-  function fetchSportsData() {
+  async function fetchESPNScores() {
     const leagues = [
-      { sport: 'basketball', title: 'NBA' },
-      { sport: 'americanfootball', title: 'NFL' },
-      { sport: 'baseball', title: 'MLB' },
-      { sport: 'football', title: 'Soccer' }
+      { name: 'NBA', url: 'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard' },
+      { name: 'NFL', url: 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard' },
+      { name: 'MLB', url: 'https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard' },
+      { name: 'Soccer', url: 'https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard' }
     ];
 
     const container = document.getElementById('sports-content');
     container.innerHTML = '';
 
-    leagues.forEach(({ sport, title }) => {
-      fetch(`https://v3.api-sports.io/${sport}/games?live=all&next=1`, {
-        headers: { 'x-apisports-key': SPORTS_API_KEY }
-      })
-        .then(r => r.json())
-        .then(data => {
-          const game = data.response && data.response[0];
-          let html = `<div class="headline"><strong>${title}:</strong><br>`;
-          if (game && game.teams && game.scores) {
-            html += `${game.teams.home.name} ${game.scores.home} - ${game.scores.away} ${game.teams.away.name}`;
-          } else if (game && game.teams) {
-            html += `Upcoming: ${game.teams.home.name} vs ${game.teams.away.name}`;
-          } else {
-            html += 'No data available';
-          }
-          html += '</div>';
-          container.innerHTML += html;
-        })
-        .catch(() => {
-          container.innerHTML += `<div class="headline"><strong>${title}:</strong><br>Error loading data</div>`;
-        });
-    });
-  }
+    for (const league of leagues) {
+      try {
+        const res = await fetch(league.url);
+        const data = await res.json();
+        const events = data.events || [];
 
-  function fetchStockData(symbol, canvasId) {
-    fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`)
-      .then(r => r.json())
-      .then(data => {
-        const ts = data['Time Series (Daily)'];
-        const dates = Object.keys(ts).slice(0, 30).reverse();
-        const prices = dates.map(d => parseFloat(ts[d]['4. close']));
-        new Chart(document.getElementById(canvasId), {
-          type: 'line',
-          data: { labels: dates, datasets: [{ label: `${symbol} Price`, data: prices, borderColor: 'blue', backgroundColor: 'rgba(0,0,255,0.1)', tension: 0.2 }] },
-          options: { responsive: true }
-        });
-      })
-      .catch(e => console.error(`Error fetching ${symbol}`, e));
+        let output = `<h3 class="stock-title">${league.name}</h3>`;
+
+        if (events.length) {
+          const game = events[0];
+          const home = game.competitions[0].competitors.find(t => t.homeAway === 'home');
+          const away = game.competitions[0].competitors.find(t => t.homeAway === 'away');
+          const status = game.status.type.description;
+
+          output += `<p class="subtitle">${away.team.displayName} vs. ${home.team.displayName}<br>Status: ${status}</p>`;
+        } else {
+          output += '<p class="subtitle">No upcoming games</p>';
+        }
+
+        container.innerHTML += output;
+      } catch (e) {
+        container.innerHTML += `<h3 class="stock-title">${league.name}</h3><p class="subtitle">Error loading data</p>`;
+      }
+    }
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     const initial = location.hash.substring(1) || 'news';
     showSection(initial);
     fetchGeneralNews();
-    fetchCompanyNews('AAL', 'news-aal');
-    fetchCompanyNews('EXPE', 'news-expe');
-    fetchCompanyNews('DEC', 'news-dec');
-    fetchCompanyNews('MSFT', 'news-msft');
-    fetchStockData('AAL', 'chart-aal');
-    fetchStockData('EXPE', 'chart-expe');
-    fetchStockData('DEC', 'chart-dec');
-    fetchStockData('MSFT', 'chart-msft');
-    fetchSportsData();
+    fetchESPNScores();
   });
 </script>
 </body>
