@@ -139,10 +139,15 @@
         });
     }
 
-    function fetchStockData(symbol, canvasId) {
+    async function fetchStockData(symbol, canvasId, delay = 0) {
+      await new Promise(res => setTimeout(res, delay));
       fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`)
         .then(r => r.json())
         .then(data => {
+          if (!data['Time Series (Daily)']) {
+            console.error(`${symbol} data unavailable`, data);
+            return;
+          }
           const ts = data['Time Series (Daily)'];
           const dates = Object.keys(ts).slice(0, 30).reverse();
           const prices = dates.map(d => parseFloat(ts[d]['4. close']));
@@ -163,15 +168,14 @@
       fetchCompanyNews('EXPE', 'news-expe');
       fetchCompanyNews('DEC', 'news-dec');
       fetchCompanyNews('MSFT', 'news-msft');
-      fetchStockData('AAL', 'chart-aal');
-      fetchStockData('EXPE', 'chart-expe');
-      fetchStockData('DEC', 'chart-dec');
-      fetchStockData('MSFT', 'chart-msft');
+      fetchStockData('AAL', 'chart-aal', 0);
+      fetchStockData('EXPE', 'chart-expe', 500);
+      fetchStockData('DEC', 'chart-dec', 1000);
+      fetchStockData('MSFT', 'chart-msft', 1500);
     });
   </script>
 </body>
 </html>
-
 
 
 
