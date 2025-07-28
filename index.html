@@ -160,20 +160,21 @@
     }
 
     function fetchSportsData() {
-      const url = `https://v3.football.api-sports.io/fixtures?next=20`;
+      const url = `https://v3.football.api-sports.io/fixtures?next=50`;
       fetch(url, { headers: { 'x-apisports-key': SPORTAPI_KEY }})
         .then(res => res.json())
         .then(data => {
-          const events = data.response.map(fix => {
-            return {
-              league: fix.league.name,
-              date: new Date(fix.fixture.date),
-              home: fix.teams.home.name,
-              away: fix.teams.away.name,
-              score: `${fix.goals.home} - ${fix.goals.away}`,
-              status: fix.fixture.status.short,
-            };
-          }).sort((a, b) => b.date - a.date);
+          const allowedLeagues = ['NBA', 'NFL', 'MLB', 'Premier League'];
+          const events = data.response.map(fix => ({
+            league: fix.league.name,
+            date: new Date(fix.fixture.date),
+            home: fix.teams.home.name,
+            away: fix.teams.away.name,
+            score: `${fix.goals.home} - ${fix.goals.away}`,
+            status: fix.fixture.status.short,
+          }))
+          .filter(e => allowedLeagues.includes(e.league))
+          .sort((a, b) => b.date - a.date);
 
           const grouped = events.reduce((acc, e) => {
             acc[e.league] = acc[e.league] || [];
@@ -213,9 +214,6 @@
   </script>
 </body>
 </html>
-
-
-
 
 
 
