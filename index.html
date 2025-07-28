@@ -4,22 +4,51 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hour Broadcast Co.</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js">function fetchScores(url, containerId, parseFn) {
-  const headers = { 'x-apisports-key': APISPORTS_KEY };
-  fetch(url, { headers })
-    .then(res => res.json())
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">function fetchCompanyNews(ticker, elementId) {
+  const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(ticker)}&pageSize=2&sortBy=publishedAt&apiKey=${NEWSAPI_KEY}`;
+  fetch(PROXY + encodeURIComponent(url))
+    .then(r => r.json())
     .then(data => {
-      const container = document.getElementById(containerId);
+      const container = document.getElementById(elementId);
       container.innerHTML = '';
-      const games = parseFn(data);
-      games.slice(0, 3).forEach(g => {
-        container.innerHTML += `<div class="game">${g.teams} | ${g.time}<br>Score: ${g.score} | Status: ${g.status}</div>`;
-      });
+      if (data.articles && data.articles.length) {
+        data.articles.forEach(article => {
+          const date = new Date(article.publishedAt).toLocaleString();
+          container.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
+        });
+      } else {
+        container.innerHTML = '<p style="text-align:center">No news available</p>';
+      }
     })
     .catch(() => {
-      const container = document.getElementById(containerId);
-      if (container) container.innerHTML = '<p style="text-align:center">Error loading scores</p>';
+      document.getElementById(elementId).innerHTML = '<p style="text-align:center">Error loading news</p>';
     });
+}
+
+function fetchStockData(symbol, canvasId) {
+  fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=JAKAWZBJIWZVSKZ1`)
+    .then(r => r.json())
+    .then(data => {
+      if (!data['Time Series (Daily)']) return;
+      const ts = data['Time Series (Daily)'];
+      const dates = Object.keys(ts).slice(0, 30).reverse();
+      const prices = dates.map(d => parseFloat(ts[d]['4. close']));
+      new Chart(document.getElementById(canvasId), {
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [{
+            label: `${symbol} Price`,
+            data: prices,
+            borderColor: 'blue',
+            backgroundColor: 'rgba(0,0,255,0.1)',
+            tension: 0.2
+          }]
+        },
+        options: { responsive: true }
+      });
+    })
+    .catch(console.error);
 }
 </script>
   <style>
@@ -82,6 +111,30 @@
     .game {
       margin: 0.75em 0;
       font-size: 1em;
+    }
+  </style>
+<style>
+    .stock {
+      margin-bottom: 2.5em;
+    }
+
+    .stock-title {
+      font-size: 1.25em;
+      font-weight: 500;
+      margin-bottom: 0.5em;
+    }
+
+    .subtitle {
+      font-size: 1em;
+      color: #666;
+      text-align: center;
+      margin-bottom: 1.5em;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 300px !important;
+      margin-bottom: 1em;
     }
   </style>
 </head>
@@ -172,7 +225,7 @@
       primarily intended for friends, family, and anyone interested in tracking the founder’s insights and keeping up with the news.
     </p>
     <p class="subtitle" style="color: #111; font-weight: bold;">
-      Hour Broadcast is for educational and informational purposes only. It should not be considered financial or investment advice.
+      Hour Broadcast Co. is for educational and informational purposes only. It should not be considered financial or investment advice.
       Always do your own research before making decisions.
     </p>
   </div>
@@ -265,6 +318,14 @@
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
+  fetchCompanyNews('AAL', 'news-aal');
+  fetchCompanyNews('EXPE', 'news-expe');
+  fetchCompanyNews('DEC', 'news-dec');
+  fetchCompanyNews('MSFT', 'news-msft');
+  fetchStockData('AAL', 'chart-aal');
+  fetchStockData('EXPE', 'chart-expe');
+  fetchStockData('DEC', 'chart-dec');
+  fetchStockData('MSFT', 'chart-msft');
   const initial = location.hash.substring(1) || 'news';
   showSection(initial);
   window.addEventListener('hashchange', () => {
