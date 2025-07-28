@@ -4,7 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hour Broadcast Co.</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">function fetchScores(url, containerId, parseFn) {
+  const headers = { 'x-apisports-key': APISPORTS_KEY };
+  fetch(url, { headers })
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      const games = parseFn(data);
+      games.slice(0, 3).forEach(g => {
+        container.innerHTML += `<div class="game">${g.teams} | ${g.time}<br>Score: ${g.score} | Status: ${g.status}</div>`;
+      });
+    })
+    .catch(() => {
+      const container = document.getElementById(containerId);
+      if (container) container.innerHTML = '<p style="text-align:center">Error loading scores</p>';
+    });
+}
+</script>
   <style>
     body {
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -151,7 +168,7 @@
       At 18, he began working in consumer banking, where he discovered a genuine interest in helping people make informed financial
       decisions. That hands-on experience further fueled his passion for the industry and shaped his career ambitions.
       <br><br>
-      Today, Hour Broadcast reflects his commitment to learn and grow in the industry. The site features original reports and analysis,
+      Today, Hour Broadcast Co. reflects his commitment to learn and grow in the industry. The site features original reports and analysis,
       primarily intended for friends, family, and anyone interested in tracking the founder’s insights and keeping up with the news.
     </p>
     <p class="subtitle" style="color: #111; font-weight: bold;">
@@ -260,8 +277,6 @@
   </script>
 </body>
 </html>
-
-
 
 
 
