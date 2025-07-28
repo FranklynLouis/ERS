@@ -189,7 +189,6 @@
       const container = document.getElementById('sports-news');
       if (container) container.innerHTML = '<p style="text-align:center">Error loading sports news</p>';
     });
-    });
 
   const generalUrl = `https://newsapi.org/v2/top-headlines?country=us&category=business&pageSize=10&apiKey=${NEWSAPI_KEY}`;
   fetch(PROXY + encodeURIComponent(generalUrl))
@@ -210,28 +209,6 @@
       document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news</p>';
     });
 }
-        })
-        .catch(() => {
-          document.getElementById('sports-news').innerHTML = '<p style="text-align:center">Error loading sports news</p>';
-        });
-    }
-
-    async function fetchScores(url, containerId, parseFn) {
-      const headers = { 'x-apisports-key': APISPORTS_KEY };
-      try {
-        const res = await fetch(url, { headers });
-        const data = await res.json();
-        const container = document.getElementById(containerId);
-        container.innerHTML = '';
-        const games = parseFn(data);
-        games.slice(0, 3).forEach(g => {
-          container.innerHTML += `<div class="game">${g.teams} | ${g.time}<br>Score: ${g.score} | Status: ${g.status}</div>`;
-        });
-      } catch (err) {
-        document.getElementById(containerId).innerHTML = '<p>Error loading scores</p>';
-      }
-    }
-
     function loadScores() {
         fetchScores('https://v1.baseball.api-sports.io/games?season=2025&league=1&date=2025-07-27', 'mlb-scores', data =>
         data.response.map(g => ({
@@ -271,6 +248,12 @@
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
+  const initial = location.hash.substring(1) || 'news';
+  showSection(initial);
+  window.addEventListener('hashchange', () => {
+    const section = location.hash.substring(1);
+    showSection(section);
+  });
   await fetchGeneralNews();
   loadScores();
 });
