@@ -70,9 +70,9 @@
 </head>
 <body>
   <nav>
-    <a href="#news">News</a>
-    <a href="#investing">Investing</a>
-    <a href="#about">About</a>
+    <a href="#news" onclick="showSection('news')">News</a>
+    <a href="#investing" onclick="showSection('investing')">Investing</a>
+    <a href="#about" onclick="showSection('about')">About</a>
   </nav>
 
   <div id="news" class="section active">
@@ -161,6 +161,11 @@
   </div>
 
   <script>
+    function showSection(sectionId) {
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      const target = document.getElementById(sectionId);
+      if (target) target.classList.add('active');
+    }
     const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
     const PROXY = 'https://api.allorigins.win/raw?url=';
     const APISPORTS_KEY = '4ceff245af2e82df6779e6f887c50740';
@@ -181,7 +186,9 @@
       }
     })
     .catch(() => {
-      document.getElementById('sports-news').innerHTML = '<p style="text-align:center">Error loading sports news</p>';
+      const container = document.getElementById('sports-news');
+      if (container) container.innerHTML = '<p style="text-align:center">Error loading sports news</p>';
+    });
     });
 
   const generalUrl = `https://newsapi.org/v2/top-headlines?country=us&category=business&pageSize=10&apiKey=${NEWSAPI_KEY}`;
@@ -270,8 +277,6 @@
   </script>
 </body>
 </html>
-
-
 
 
 
