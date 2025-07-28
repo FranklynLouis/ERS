@@ -81,6 +81,8 @@
 
     <h2 class="sports-title">SPORTS</h2>
     <div id="sports-news">Loading sports headline...</div>
+    <button onclick="loadScores()" style="display:block; margin: 1em auto; padding: 0.5em 1em; font-size: 1em; cursor: pointer;">Load Scores</button>
+<div id="score-loading" style="text-align:center; display:none; margin-top:1em; font-size:1em; color:#333;">Loading scores...</div>
     <div id="sports-scores">
       <h3>MLB</h3>
       <div id="mlb-scores"></div>
@@ -127,7 +129,35 @@
       <p>No report available</p>
     </div>
     <p class="subtitle" style="color: #111; font-weight: bold;">
-      Hour Broadcast is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.
+      Hour Broadcast Co. is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.
+    </p>
+  </div>
+
+  <div id="about" class="section">
+    <h2 class="title">About Hour Broadcast Co.</h2>
+    <p class="subtitle">
+      Hour Broadcast Co. is an independent investment research site created with the goal of sharing thoughtful, data-driven market analysis.
+      Built as both a personal learning platform and a public archive of research reports, Hour Broadcast exists to track the founder’s
+      evolving perspective on markets, economics, and business strategy.
+    </p>
+    <p class="subtitle">
+      <strong style="color: #111;">Long-term mission: To go as far as possible in the field of finance and to bring others along for the ride.</strong>
+    </p>
+
+    <p class="subtitle" style="color: #666;">
+      Founder and Lead Analyst, <strong style="color: #111;">Franklyn Louis</strong> is a New York based college student with a growing focus on
+      investment research and analysis. His journey began at the age of 16 during the height of the COVID-19 pandemic. Faced with months
+      of uncertainty and boredom, he turned his attention to financial markets. Not just to trade, but to understand.
+      <br><br>
+      At 18, he began working in consumer banking, where he discovered a genuine interest in helping people make informed financial
+      decisions. That hands-on experience further fueled his passion for the industry and shaped his career ambitions.
+      <br><br>
+      Today, Hour Broadcast reflects his commitment to learn and grow in the industry. The site features original reports and analysis,
+      primarily intended for friends, family, and anyone interested in tracking the founder’s insights and keeping up with the news.
+    </p>
+    <p class="subtitle" style="color: #111; font-weight: bold;">
+      Hour Broadcast is for educational and informational purposes only. It should not be considered financial or investment advice.
+      Always do your own research before making decisions.
     </p>
   </div>
 
@@ -172,10 +202,8 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      fetchGeneralNews();
-
-      // MLB
+    function loadScores() {
+  document.getElementById('score-loading').style.display = 'block';
       fetchScores('https://v1.baseball.api-sports.io/games?season=2025&league=1&date=2025-07-27', 'mlb-scores', data =>
         data.response.map(g => ({
           teams: `${g.teams.away.name} at ${g.teams.home.name}`,
@@ -185,7 +213,6 @@
         }))
       );
 
-      // NBA
       fetchScores('https://v1.basketball.api-sports.io/games?season=2025&league=12&date=2025-06-22', 'nba-scores', data =>
         data.response.map(g => ({
           teams: `${g.teams.away.name} at ${g.teams.home.name}`,
@@ -195,7 +222,6 @@
         }))
       );
 
-      // NFL
       fetchScores('https://v1.american-football.api-sports.io/games?season=2025&league=1&date=2025-07-31', 'nfl-scores', data =>
         data.response.map(g => ({
           teams: `${g.teams.away.name} at ${g.teams.home.name}`,
@@ -205,7 +231,6 @@
         }))
       );
 
-      // Premier League
       fetchScores('https://v3.football.api-sports.io/fixtures?season=2025&league=39&date=2025-08-15', 'epl-scores', data =>
         data.response.map(g => ({
           teams: `${g.teams.away.name} at ${g.teams.home.name}`,
@@ -214,11 +239,14 @@
           status: g.fixture.status.long
         }))
       );
-    });
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+  await fetchGeneralNews();
+});
   </script>
 </body>
 </html>
-
 
 
 
