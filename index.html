@@ -4,124 +4,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hour Broadcast Co.</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
-
-
   <style>
-    body {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #fafafa;
-      color: #111;
-    }
-
-    nav {
-      background: #111;
-      color: white;
-      padding: 1em;
-      display: flex;
-      justify-content: space-around;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      padding: 0 1em;
-      font-weight: 500;
-    }
-
-    .section {
-      padding: 2em;
-      display: none;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .active {
-      display: block;
-    }
-
-    .headline {
-      margin-bottom: 1em;
-      text-align: left;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 0.5em;
-    }
-
-    .title {
-      font-size: 2.25em;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 1em;
-      text-transform: uppercase;
-    }
-
-    .sports-title {
-      font-size: 2em;
-      font-weight: bold;
-      margin-top: 3em;
-      text-align: center;
-    }
-
-    .game {
-      margin: 0.75em 0;
-      font-size: 1em;
-    }
-  </style>
-<style>
-    .stock {
-      margin-bottom: 2.5em;
-    }
-
-    .stock-title {
-      font-size: 1.25em;
-      font-weight: 500;
-      margin-bottom: 0.5em;
-    }
-
-    .subtitle {
-      font-size: 1em;
-      color: #666;
-      text-align: center;
-      margin-bottom: 1.5em;
-    }
-
-    canvas {
-      width: 100% !important;
-      height: 300px !important;
-      margin-bottom: 1em;
-    }
+    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin:0; padding:0; background:#fafafa; color:#111; }
+    nav { background:#111; color:#fff; padding:1em; display:flex; justify-content:space-around; }
+    nav a { color:#fff; text-decoration:none; padding:0 1em; font-weight:500; cursor:pointer; }
+    .section { padding:2em; display:none; max-width:1000px; margin:0 auto; }
+    .active { display:block; }
+    .title { font-size:2.25em; font-weight:600; text-align:center; margin-bottom:1em; text-transform:uppercase; }
+    .headline { margin-bottom:1em; border-bottom:1px solid #ccc; padding-bottom:0.5em; }
+    .sports-title { font-size:2em; font-weight:bold; text-align:center; margin-top:2em; }
+    #sports-scores h3 { text-align:center; }
+    .game { margin:0.75em 0; text-align:center; }
+    .stock { margin-bottom:2.5em; }
+    .stock-title { font-size:1.25em; font-weight:500; margin-bottom:0.5em; }
+    .subtitle { font-size:1em; color:#666; text-align:center; margin-bottom:1.5em; }
+    #about .subtitle { text-align:left; margin-bottom:1.5em; line-height:1.6; }
+    canvas { width:100% !important; height:300px !important; margin-bottom:1em; }
   </style>
 </head>
 <body>
   <nav>
-    <a href="#news" onclick="showSection('news')">News</a>
-    <a href="#investing" onclick="showSection('investing')">Investing</a>
-    <a href="#about" onclick="showSection('about')">About</a>
+    <a onclick="showSection('news')">News</a>
+    <a onclick="showSection('investing')">Investing</a>
+    <a onclick="showSection('about')">About</a>
   </nav>
 
   <div id="news" class="section active">
     <h2 class="title">TOP NEWS HEADLINES</h2>
     <div id="news-content">Loading news...</div>
-
-    <h2 class="title">SPORTS</h2>
+    <h2 class="sports-title">SPORTS</h2>
     <div id="sports-news">Loading sports headline...</div>
-    
-    <div id="sports-scores">
-      <h3>MLB</h3>
-      <div id="mlb-scores"></div>
-
-      <h3>NBA</h3>
-      <div id="nba-scores"></div>
-
-      <h3>NFL</h3>
-      <div id="nfl-scores"></div>
-
-      <h3>PREMIER LEAGUE</h3>
-      <div id="epl-scores"></div>
+    <div style="text-align:center"><a href="#" id="toggle-scores" style="text-decoration:underline;cursor:pointer;">GAMES AND SCORES</a></div>
+    <div id="scores-container" style="display:none">
+      <div id="sports-scores">
+      <h3>MLB</h3><div id="mlb-scores">Loading scores...</div>
+      <h3>NBA</h3><div id="nba-scores">Loading scores...</div>
+      <h3>NFL</h3><div id="nfl-scores">Loading scores...</div>
+      <h3>Premier League</h3><div id="epl-scores">Loading scores...</div>
     </div>
   </div>
 
@@ -132,30 +51,25 @@
       <div class="stock-title">American Airlines (NASDAQ:AAL)</div>
       <canvas id="chart-aal"></canvas>
       <div id="news-aal">Loading news...</div>
-      <p>No report available</p>
     </div>
-
     <h2 class="title">BLIND GROWTH</h2>
     <p class="subtitle">Long-term investments with growth potential.</p>
     <div class="stock">
       <div class="stock-title">Expedia Group Inc. (NASDAQ:EXPE)</div>
       <canvas id="chart-expe"></canvas>
       <div id="news-expe">Loading news...</div>
-      <p>No report available</p>
     </div>
     <div class="stock">
       <div class="stock-title">Diversified Energy Company (NYSE:DEC)</div>
       <canvas id="chart-dec"></canvas>
       <div id="news-dec">Loading news...</div>
-      <p>No report available</p>
     </div>
     <div class="stock">
       <div class="stock-title">Microsoft Corp. (NASDAQ:MSFT)</div>
       <canvas id="chart-msft"></canvas>
       <div id="news-msft">Loading news...</div>
-      <p>No report available</p>
     </div>
-    <p class="subtitle" style="color: #111; font-weight: bold;">
+    <p class="subtitle" style="color:#111;font-weight:bold;">
       Hour Broadcast Co. is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.
     </p>
   </div>
@@ -164,7 +78,7 @@
     <h2 class="title">About Hour Broadcast Co.</h2>
     <p class="subtitle">
       Hour Broadcast Co. is an independent investment research site created with the goal of sharing thoughtful, data-driven market analysis.
-      Built as both a personal learning platform and a public archive of research reports, Hour Broadcast exists to track the founder’s
+      Built as both a personal learning platform and a public archive of research reports, Hour Broadcast Co. exists to track the founder’s
       evolving perspective on markets, economics, and business strategy.
     </p>
     <p class="subtitle">
@@ -188,114 +102,127 @@
     </p>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    function showSection(sectionId) {
-      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-      const target = document.getElementById(sectionId);
-      if (target) target.classList.add('active');
-    }
     const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
-    const PROXY = 'https://api.allorigins.win/raw?url=';
-    const APISPORTS_KEY = '4ceff245af2e82df6779e6f887c50740';
+    const ALPHA_KEY = 'JAKAWZBJIWZVSKZ1';
+    const PROXY = 'https://corsproxy.io/?';
 
-    function fetchGeneralNews() {
-  const sportsUrl = `https://newsapi.org/v2/top-headlines?q=NBA%20OR%20NFL%20OR%20MLB&category=sports&country=us&pageSize=1&apiKey=${NEWSAPI_KEY}`;
-  fetch(PROXY + encodeURIComponent(sportsUrl))
-    .then(r => r.json())
-    .then(data => {
-      const container = document.getElementById('sports-news');
-      container.innerHTML = '';
-      if (data.articles && data.articles.length) {
-        const article = data.articles[0];
-        const date = new Date(article.publishedAt).toLocaleString();
-        container.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
-      } else {
-        container.innerHTML = '<p style="text-align:center">No sports news available</p>';
-      }
-    })
-    .catch(() => {
-      const container = document.getElementById('sports-news');
-      if (container) container.innerHTML = '<p style="text-align:center">Error loading sports news</p>';
-    });
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
 
-  const generalUrl = `https://newsapi.org/v2/top-headlines?country=us&category=business&pageSize=10&apiKey=${NEWSAPI_KEY}`;
-  fetch(PROXY + encodeURIComponent(generalUrl))
-    .then(r => r.json())
-    .then(data => {
-      const container = document.getElementById('news-content');
-      container.innerHTML = '';
-      if (data.articles && data.articles.length) {
-        data.articles.forEach(article => {
-          const date = new Date(article.publishedAt).toLocaleString();
-          container.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
+    async function fetchNews(containerId, url) {
+      try {
+        const res = await fetch(PROXY + encodeURIComponent(url));
+        const data = await res.json();
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        (data.articles || []).forEach(a => {
+          const date = new Date(a.publishedAt).toLocaleString();
+          container.innerHTML += `
+            <div class="headline">
+              <strong>${a.source.name}: ${a.title}</strong><br>
+              <em>${date}</em><br>
+              <a href="${a.url}" target="_blank">Read full article</a>
+            </div>`;
         });
-      } else {
-        container.innerHTML = '<p style="text-align:center">No news available</p>';
+      } catch (e) {
+        document.getElementById(containerId).innerHTML = '<p style="text-align:center">Error loading news</p>';
+        console.error('Error fetching news:', e);
       }
-    })
-    .catch(() => {
-      document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news</p>';
-    });
-}
-    function loadScores() {
-        fetchScores('https://v1.baseball.api-sports.io/games?season=2025&league=1&date=2025-07-27', 'mlb-scores', data =>
-        data.response.map(g => ({
-          teams: `${g.teams.away.name} at ${g.teams.home.name}`,
-          time: new Date(g.date).toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit', hour12: true }) + ' EST',
-          score: `${g.scores.away.total ?? 0} - ${g.scores.home.total ?? 0}`,
-          status: g.status.long
-        }))
-      );
+    }
 
-      fetchScores('https://v1.basketball.api-sports.io/games?season=2025&league=12&date=2025-06-22', 'nba-scores', data =>
-        data.response.map(g => ({
-          teams: `${g.teams.away.name} at ${g.teams.home.name}`,
-          time: new Date(g.date).toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit', hour12: true }) + ' EST',
-          score: `${g.scores.away.total ?? 0} - ${g.scores.home.total ?? 0}`,
-          status: g.status.long
-        }))
+    async function fetchGeneralNews() {
+      await fetchNews(
+        'news-content',
+        `https://newsapi.org/v2/top-headlines?country=us&category=business&pageSize=10&apiKey=${NEWSAPI_KEY}`
       );
+    }
 
-      fetchScores('https://v1.american-football.api-sports.io/games?season=2025&league=1&date=2025-07-31', 'nfl-scores', data =>
-        data.response.map(g => ({
-          teams: `${g.teams.away.name} at ${g.teams.home.name}`,
-          time: new Date(g.date).toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit', hour12: true }) + ' EST',
-          score: `${g.scores.away.total ?? 0} - ${g.scores.home.total ?? 0}`,
-          status: g.status.long
-        }))
+    async function fetchSportsHeadline() {
+      await fetchNews(
+        'sports-news',
+        `https://newsapi.org/v2/top-headlines?category=sports&country=us&pageSize=3&apiKey=${NEWSAPI_KEY}`
       );
+    }
 
-      fetchScores('https://v3.football.api-sports.io/fixtures?season=2025&league=39&date=2025-08-15', 'epl-scores', data =>
-        data.response.map(g => ({
-          teams: `${g.teams.away.name} at ${g.teams.home.name}`,
-          time: new Date(g.fixture.date).toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit', hour12: true }) + ' EST',
-          score: `${g.goals.away ?? 0} - ${g.goals.home ?? 0}`,
-          status: g.fixture.status.long
-        }))
+    async function fetchCompanyNews(ticker, containerId) {
+      await fetchNews(
+        containerId,
+        `https://newsapi.org/v2/everything?q=${ticker}&pageSize=2&sortBy=publishedAt&apiKey=${NEWSAPI_KEY}`
       );
+    }
+
+    async function fetchStockData(symbol, canvasId) {
+      try {
+        const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${ALPHA_KEY}`;
+        const res = await fetch(PROXY + encodeURIComponent(url));
+        const data = await res.json();
+        const ts = data['Time Series (Daily)'] || {};
+        const dates = Object.keys(ts).slice(0,30).reverse();
+        const prices = dates.map(d => parseFloat(ts[d]['4. close']));
+        new Chart(document.getElementById(canvasId), {
+          type: 'line',
+          data: { labels: dates, datasets: [{ label: `${symbol} Price`, data: prices, tension: 0.2 }] },
+          options: { responsive: true }
+        });
+      } catch (e) {
+        console.error('Error loading stock data for', symbol, e);
+      }
+    }
+
+    async function fetchESPNScore(url, containerId) {
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const events = data.events || [];
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        events.slice(0,3).forEach(e => {
+          const comp = e.competitions[0].competitors;
+          const home = comp.find(c => c.homeAway === 'home');
+          const away = comp.find(c => c.homeAway === 'away');
+          const dateObj = new Date(e.date);
+          const dateStr = dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+          const timeStr = dateObj.toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit', hour12: true }) + ' EST';
+          const state = e.status.type.state;
+          const status = state === 'post' ? 'Final' : state === 'in' ? 'In Progress' : 'Scheduled';
+          container.innerHTML += `
+            <div class="game">
+              ${away.team.displayName} at ${home.team.displayName}<br>
+              <em>${dateStr} ${timeStr}</em><br>
+              Score: ${away.score||0} - ${home.score||0} | Status: ${status}
+            </div>`;
+        });
+      } catch (e) {
+        document.getElementById(containerId).innerHTML = '<p style="text-align:center">Error loading scores</p>';
+        console.error('Error fetching ESPN scores:', e);
+      }
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
-  fetchCompanyNews('AAL', 'news-aal');
-  fetchCompanyNews('EXPE', 'news-expe');
-  fetchCompanyNews('DEC', 'news-dec');
-  fetchCompanyNews('MSFT', 'news-msft');
-  fetchStockData('AAL', 'chart-aal');
-  fetchStockData('EXPE', 'chart-expe');
-  fetchStockData('DEC', 'chart-dec');
-  fetchStockData('MSFT', 'chart-msft');
-  const initial = location.hash.substring(1) || 'news';
-  showSection(initial);
-  window.addEventListener('hashchange', () => {
-    const section = location.hash.substring(1);
-    showSection(section);
-  });
-  await fetchGeneralNews();
-  loadScores();
-});
+      showSection('news');
+      await fetchGeneralNews();
+      await fetchSportsHeadline();
+      ['AAL','EXPE','DEC','MSFT'].forEach(t => fetchCompanyNews(t, 'news-' + t.toLowerCase()));
+      [['AAL','chart-aal'],['EXPE','chart-expe'],['DEC','chart-dec'],['MSFT','chart-msft']]
+        .forEach(([s,c]) => fetchStockData(s,c));
+      await fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20250727', 'mlb-scores');
+      await fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20250622', 'nba-scores');
+      await fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20250731', 'nfl-scores');
+      await fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=20250815', 'epl-scores');
+      document.getElementById('toggle-scores').addEventListener('click', e => {
+        e.preventDefault();
+        const sc = document.getElementById('scores-container');
+        sc.style.display = sc.style.display === 'none' ? 'block' : 'none';
+      });
+    });
   </script>
 </body>
 </html>
+
 
 
 
