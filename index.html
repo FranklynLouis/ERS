@@ -47,69 +47,55 @@
       padding-bottom: 0.5em;
     }
 
-    .stock {
-      margin-bottom: 2.5em;
-    }
-
     .title {
       font-size: 2.25em;
       font-weight: 600;
       text-align: center;
       margin-bottom: 1em;
       text-transform: uppercase;
-    
-
-    .stock-title {
-      font-size: 1.25em;
-      font-weight: 500;
-      margin-bottom: 0.5em;
     }
 
-    .subtitle {
+    .sports-title {
+      font-size: 2em;
+      font-weight: bold;
+      margin-top: 3em;
+      text-align: center;
+    }
+
+    .game {
+      margin: 0.75em 0;
       font-size: 1em;
-      color: #666;
-      text-align: center;
-      margin-bottom: 1.5em;
-    }
-
-    canvas {
-      width: 100% !important;
-      height: 300px !important;
-      margin-bottom: 1em;
-    }
-
-    p, a {
-      font-size: 0.95em;
-    }
-
-    .logo-container {
-      text-align: center;
-      padding: 1em 0 0.5em;
-      background-color: #000;
-    }
-
-    .logo-container img {
-      width: 200px;
-      max-width: 80%;
     }
   </style>
 </head>
 <body>
-
-  <!-- NAVIGATION -->
   <nav>
     <a href="#news">News</a>
     <a href="#investing">Investing</a>
     <a href="#about">About</a>
   </nav>
 
-  <!-- NEWS SECTION -->
-  <div id="news" class="section">
+  <div id="news" class="section active">
     <h2 class="title">TOP NEWS HEADLINES</h2>
     <div id="news-content">Loading news...</div>
+
+    <h2 class="sports-title">SPORTS</h2>
+    <div id="sports-news">Loading sports headline...</div>
+    <div id="sports-scores">
+      <h3>MLB</h3>
+      <div id="mlb-scores"></div>
+
+      <h3>NBA</h3>
+      <div id="nba-scores"></div>
+
+      <h3>NFL</h3>
+      <div id="nfl-scores"></div>
+
+      <h3>PREMIER LEAGUE</h3>
+      <div id="epl-scores"></div>
+    </div>
   </div>
 
-  <!-- INVESTING SECTION -->
   <div id="investing" class="section">
     <h2 class="title">QUICK PICK</h2>
     <p class="subtitle">Updated often for short-term gain opportunities.</p>
@@ -145,136 +131,89 @@
     </p>
   </div>
 
-  <!-- ABOUT SECTION -->
-  <div id="about" class="section">
-    <h2 class="title">About Hour Broadcast Co.</h2>
-    <p class="subtitle">
-      Hour Broadcast Co. is an independent investment research site created with the goal of sharing thoughtful, data-driven market analysis.
-      Built as both a personal learning platform and a public archive of research reports, Hour Broadcast exists to track the founder’s
-      evolving perspective on markets, economics, and business strategy.
-    </p>
-    <p class="subtitle">
-      <strong style="color: #111;">Long-term mission: To go as far as possible in the field of finance and to bring others along for the ride.</strong>
-    </p>
-
-    <p class="subtitle" style="color: #666;">
-      Founder and Lead Analyst, <strong style="color: #111;">Franklyn Louis</strong> is a New York based college student with a growing focus on
-      investment research and analysis. His journey began at the age of 16 during the height of the COVID-19 pandemic. Faced with months
-      of uncertainty and boredom, he turned his attention to financial markets. Not just to trade, but to understand.
-      <br><br>
-      At 18, he began working in consumer banking, where he discovered a genuine interest in helping people make informed financial
-      decisions. That hands-on experience further fueled his passion for the industry and shaped his career ambitions.
-      <br><br>
-      Today, Hour Broadcast reflects his commitment to learn and grow in the industry. The site features original reports and analysis,
-      primarily intended for friends, family, and anyone interested in tracking the founder’s insights and keeping up with the news.
-    </p>
-    <p class="subtitle" style="color: #111; font-weight: bold;">
-      Hour Broadcast is for educational and informational purposes only. It should not be considered financial or investment advice.
-      Always do your own research before making decisions.
-    </p>
-  </div>
-
-  <!-- SCRIPTS -->
   <script>
-    const API_KEY = 'JAKAWZBJIWZVSKZ1';
     const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
     const PROXY = 'https://api.allorigins.win/raw?url=';
-
-    function showSection(sectionId) {
-      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-      const target = document.getElementById(sectionId);
-      if (target) target.classList.add('active');
-    }
-
-    window.addEventListener('hashchange', () => {
-      const id = location.hash.substring(1) || 'news';
-      showSection(id);
-    });
+    const APISPORTS_KEY = '4ceff245af2e82df6779e6f887c50740';
 
     function fetchGeneralNews() {
-      const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&pageSize=15&apiKey=${NEWSAPI_KEY}`;
-      fetch(PROXY + encodeURIComponent(url))
+      const sportsUrl = `https://newsapi.org/v2/everything?q=NBA+OR+NFL+OR+MLB&pageSize=1&sortBy=publishedAt&apiKey=${NEWSAPI_KEY}`;
+      fetch(PROXY + encodeURIComponent(sportsUrl))
         .then(r => r.json())
         .then(data => {
-          const container = document.getElementById('news-content');
+          const container = document.getElementById('sports-news');
           container.innerHTML = '';
           if (data.articles && data.articles.length) {
-            data.articles.forEach(article => {
-              const date = new Date(article.publishedAt).toLocaleString();
-              container.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
-            });
+            const article = data.articles[0];
+            const date = new Date(article.publishedAt).toLocaleString();
+            container.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
           } else {
-            container.innerHTML = '<p style="text-align:center">No news available</p>';
+            container.innerHTML = '<p style="text-align:center">No sports news available</p>';
           }
         })
         .catch(() => {
-          document.getElementById('news-content').innerHTML = '<p style="text-align:center">Error loading news</p>';
+          document.getElementById('sports-news').innerHTML = '<p style="text-align:center">Error loading sports news</p>';
         });
     }
 
-    function fetchCompanyNews(ticker, elementId) {
-      const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(ticker)}&pageSize=2&sortBy=publishedAt&apiKey=${NEWSAPI_KEY}`;
-      fetch(PROXY + encodeURIComponent(url))
-        .then(r => r.json())
-        .then(data => {
-          const container = document.getElementById(elementId);
-          container.innerHTML = '';
-          if (data.articles && data.articles.length) {
-            data.articles.forEach(article => {
-              const date = new Date(article.publishedAt).toLocaleString();
-              container.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
-            });
-          } else {
-            container.innerHTML = '<p style="text-align:center">No news available</p>';
-          }
-        })
-        .catch(() => {
-          document.getElementById(elementId).innerHTML = '<p style="text-align:center">Error loading news</p>';
+    async function fetchScores(url, containerId, parseFn) {
+      const headers = { 'x-apisports-key': APISPORTS_KEY };
+      try {
+        const res = await fetch(url, { headers });
+        const data = await res.json();
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        const games = parseFn(data);
+        games.slice(0, 3).forEach(g => {
+          container.innerHTML += `<div class="game">${g.teams} | ${g.time}<br>Score: ${g.score} | Status: ${g.status}</div>`;
         });
-    }
-
-    async function fetchStockData(symbol, canvasId, delay = 0) {
-      await new Promise(res => setTimeout(res, delay));
-      fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`)
-        .then(r => r.json())
-        .then(data => {
-          if (!data['Time Series (Daily)']) {
-            console.error(`${symbol} data unavailable`, data);
-            return;
-          }
-          const ts = data['Time Series (Daily)'];
-          const dates = Object.keys(ts).slice(0, 30).reverse();
-          const prices = dates.map(d => parseFloat(ts[d]['4. close']));
-          new Chart(document.getElementById(canvasId), {
-            type: 'line',
-            data: {
-              labels: dates,
-              datasets: [{
-                label: `${symbol} Price`,
-                data: prices,
-                borderColor: 'blue',
-                backgroundColor: 'rgba(0,0,255,0.1)',
-                tension: 0.2
-              }]
-            },
-            options: { responsive: true }
-          });
-        })
-        .catch(e => console.error(`Error fetching ${symbol}`, e));
+      } catch (err) {
+        document.getElementById(containerId).innerHTML = '<p>Error loading scores</p>';
+      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const initial = location.hash.substring(1) || 'news';
-      showSection(initial);
       fetchGeneralNews();
-      fetchCompanyNews('AAL', 'news-aal');
-      fetchCompanyNews('EXPE', 'news-expe');
-      fetchCompanyNews('DEC', 'news-dec');
-      fetchCompanyNews('MSFT', 'news-msft');
-      fetchStockData('AAL', 'chart-aal', 0);
-      fetchStockData('EXPE', 'chart-expe', 500);
-      fetchStockData('DEC', 'chart-dec', 1000);
-      fetchStockData('MSFT', 'chart-msft', 1500);
+
+      // MLB
+      fetchScores('https://v1.baseball.api-sports.io/games?season=2025&league=1&date=2025-07-27', 'mlb-scores', data =>
+        data.response.map(g => ({
+          teams: `${g.teams.away.name} at ${g.teams.home.name}`,
+          time: new Date(g.date).toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit', hour12: true }) + ' EST',
+          score: `${g.scores.away.total ?? 0} - ${g.scores.home.total ?? 0}`,
+          status: g.status.long
+        }))
+      );
+
+      // NBA
+      fetchScores('https://v1.basketball.api-sports.io/games?season=2025&league=12&date=2025-06-22', 'nba-scores', data =>
+        data.response.map(g => ({
+          teams: `${g.teams.away.name} at ${g.teams.home.name}`,
+          time: new Date(g.date).toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit', hour12: true }) + ' EST',
+          score: `${g.scores.away.total ?? 0} - ${g.scores.home.total ?? 0}`,
+          status: g.status.long
+        }))
+      );
+
+      // NFL
+      fetchScores('https://v1.american-football.api-sports.io/games?season=2025&league=1&date=2025-07-31', 'nfl-scores', data =>
+        data.response.map(g => ({
+          teams: `${g.teams.away.name} at ${g.teams.home.name}`,
+          time: new Date(g.date).toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit', hour12: true }) + ' EST',
+          score: `${g.scores.away.total ?? 0} - ${g.scores.home.total ?? 0}`,
+          status: g.status.long
+        }))
+      );
+
+      // Premier League
+      fetchScores('https://v3.football.api-sports.io/fixtures?season=2025&league=39&date=2025-08-15', 'epl-scores', data =>
+        data.response.map(g => ({
+          teams: `${g.teams.away.name} at ${g.teams.home.name}`,
+          time: new Date(g.fixture.date).toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit', hour12: true }) + ' EST',
+          score: `${g.goals.away ?? 0} - ${g.goals.home ?? 0}`,
+          status: g.fixture.status.long
+        }))
+      );
     });
   </script>
 </body>
