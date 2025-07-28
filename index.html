@@ -4,52 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hour Broadcast Co.</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js">function fetchCompanyNews(ticker, elementId) {
-  const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(ticker)}&pageSize=2&sortBy=publishedAt&apiKey=${NEWSAPI_KEY}`;
-  fetch(PROXY + encodeURIComponent(url))
-    .then(r => r.json())
-    .then(data => {
-      const container = document.getElementById(elementId);
-      container.innerHTML = '';
-      if (data.articles && data.articles.length) {
-        data.articles.forEach(article => {
-          const date = new Date(article.publishedAt).toLocaleString();
-          container.innerHTML += `<div class="headline"><strong>${article.source.name}: ${article.title}</strong><br><em>${date}</em><br><a href="${article.url}" target="_blank">Read full article</a></div>`;
-        });
-      } else {
-        container.innerHTML = '<p style="text-align:center">No news available</p>';
-      }
-    })
-    .catch(() => {
-      document.getElementById(elementId).innerHTML = '<p style="text-align:center">Error loading news</p>';
-    });
-}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-function fetchStockData(symbol, canvasId) {
-  fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=JAKAWZBJIWZVSKZ1`)
-    .then(r => r.json())
-    .then(data => {
-      if (!data['Time Series (Daily)']) return;
-      const ts = data['Time Series (Daily)'];
-      const dates = Object.keys(ts).slice(0, 30).reverse();
-      const prices = dates.map(d => parseFloat(ts[d]['4. close']));
-      new Chart(document.getElementById(canvasId), {
-        type: 'line',
-        data: {
-          labels: dates,
-          datasets: [{
-            label: `${symbol} Price`,
-            data: prices,
-            borderColor: 'blue',
-            backgroundColor: 'rgba(0,0,255,0.1)',
-            tension: 0.2
-          }]
-        },
-        options: { responsive: true }
-      });
-    })
-    .catch(console.error);
-}
+
+
+<script>
+$1
 </script>
   <style>
     body {
@@ -149,7 +109,7 @@ function fetchStockData(symbol, canvasId) {
     <h2 class="title">TOP NEWS HEADLINES</h2>
     <div id="news-content">Loading news...</div>
 
-    <h2 class="sports-title">SPORTS</h2>
+    <h2 class="title">SPORTS</h2>
     <div id="sports-news">Loading sports headline...</div>
     
     <div id="sports-scores">
