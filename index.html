@@ -160,37 +160,55 @@
     }
 
     function fetchSportsData() {
-      const url = `https://v3.football.api-sports.io/fixtures?next=50`;
-      fetch(url, { headers: { 'x-apisports-key': SPORTAPI_KEY }})
-        .then(res => res.json())
-        .then(data => {
-          const allowedLeagues = ['NBA', 'NFL', 'MLB', 'Premier League'];
-          const events = data.response.map(fix => ({
-            league: fix.league.name,
-            date: new Date(fix.fixture.date),
-            home: fix.teams.home.name,
-            away: fix.teams.away.name,
-            score: `${fix.goals.home} - ${fix.goals.away}`,
-            status: fix.fixture.status.short,
-          }))
-          .filter(e => allowedLeagues.includes(e.league))
-          .sort((a, b) => b.date - a.date);
+      const today = new Date().toISOString().split('T')[0];
+      const headers = { 'x-apisports-key': SPORTAPI_KEY };
 
-          const grouped = events.reduce((acc, e) => {
-            acc[e.league] = acc[e.league] || [];
-            acc[e.league].push(e);
+      const endpoints = [
+        { league: 'NBA', url: `https://v1.basketball.api-sports.io/games?date=${today}` },
+        { league: 'NFL', url: `https://v1.american-football.api-sports.io/games?date=${today}` },
+        { league: 'MLB', url: `https://v1.baseball.api-sports.io/games?date=${today}` },
+        { league: 'Premier League', url: `https://v3.football.api-sports.io/fixtures?date=${today}` }
+      ];
+
+      Promise.all(endpoints.map(e => fetch(e.url, { headers }).then(r => r.json()).then(data => ({ league: e.league, data }))))
+        .then(results => {
+          const games = [];
+
+          results.forEach(({ league, data }) => {
+            const items = data.response;
+            if (!items || !items.length) return;
+
+            items.forEach(g => {
+              const match = {
+                league,
+                date: new Date(g.date || g.fixture?.date),
+                home: g.teams?.home?.name || g.homeTeam?.name,
+                away: g.teams?.away?.name || g.awayTeam?.name,
+                score: `${g.scores?.home?.total ?? g.goals?.home ?? 0} - ${g.scores?.away?.total ?? g.goals?.away ?? 0}`,
+                status: g.status?.short || g.fixture?.status?.short || 'Scheduled'
+              };
+
+              if (league === 'Premier League' && g.league?.name !== 'Premier League') return;
+
+              games.push(match);
+            });
+          });
+
+          const grouped = games.sort((a, b) => b.date - a.date).reduce((acc, g) => {
+            acc[g.league] = acc[g.league] || [];
+            acc[g.league].push(g);
             return acc;
           }, {});
 
           let html = '';
-          Object.entries(grouped).forEach(([league, games]) => {
-            html += `<h3 style='margin-top:2em'>${league.toUpperCase()}</h3>`;
-            games.forEach(g => {
-              html += `<div><strong>${g.away} at ${g.home}</strong> | ${g.date.toLocaleString('en-US', { timeZone: 'America/New_York' })}<br>Score: ${g.score} | Status: ${g.status}</div><br>`;
+          Object.entries(grouped).forEach(([league, matches]) => {
+            html += `<h3 style='margin-top:2em'><strong>${league.toUpperCase()}</strong></h3>`;
+            matches.forEach(m => {
+              html += `<div><strong>${m.away} at ${m.home}</strong> | ${m.date.toLocaleString('en-US', { timeZone: 'America/New_York' })}<br>Score: ${m.score} | Status: ${m.status}</div><br>`;
             });
           });
 
-          document.getElementById('sports-content').innerHTML = html || 'No games found';
+          document.getElementById('sports-content').innerHTML = html || '<p>No games found</p>';
         })
         .catch(() => {
           document.getElementById('sports-content').innerHTML = '<p>Error loading sports data</p>';
@@ -214,7 +232,6 @@
   </script>
 </body>
 </html>
-
 
 
 
