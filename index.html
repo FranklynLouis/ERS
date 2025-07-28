@@ -6,21 +6,88 @@
   <title>Hour Broadcast Co.</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #fafafa; color: #111; }
-    nav { background: #111; color: white; padding: 1em; display: flex; justify-content: space-around; }
-    nav a { color: white; text-decoration: none; padding: 0 1em; font-weight: 500; }
-    .section { padding: 2em; display: none; max-width: 1000px; margin: 0 auto; }
-    .active { display: block; }
-    .headline { margin-bottom: 1em; text-align: left; border-bottom: 1px solid #ccc; padding-bottom: 0.5em; }
-    .stock { margin-bottom: 2.5em; }
-    .title { font-size: 2.25em; font-weight: 600; text-align: center; margin-bottom: 1em; text-transform: uppercase; }
-    .stock-title { font-size: 1.25em; font-weight: 500; margin-bottom: 0.5em; }
-    .subtitle { font-size: 1em; color: #666; text-align: center; margin-bottom: 1.5em; }
-    canvas { width: 100% !important; height: 300px !important; margin-bottom: 1em; }
-    p, a { font-size: 0.95em; }
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fafafa;
+      color: #111;
+    }
+    .logo-container {
+      text-align: center;
+      background-color: #111;
+      padding: 1em 0;
+    }
+    .logo-container img {
+      max-width: 180px;
+      height: auto;
+    }
+    nav {
+      background: #111;
+      color: white;
+      padding: 1em;
+      display: flex;
+      justify-content: space-around;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 0 1em;
+      font-weight: 500;
+    }
+    .section {
+      padding: 2em;
+      display: none;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .active {
+      display: block;
+    }
+    .headline {
+      margin-bottom: 1em;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.5em;
+    }
+    .stock {
+      margin-bottom: 2.5em;
+    }
+    .title {
+      font-size: 2.25em;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 1em;
+      text-transform: uppercase;
+    }
+    .stock-title {
+      font-size: 1.25em;
+      font-weight: 500;
+      margin-bottom: 0.5em;
+    }
+    .subtitle {
+      font-size: 1em;
+      color: #666;
+      text-align: center;
+      margin-bottom: 1.5em;
+    }
+    canvas {
+      width: 100% !important;
+      height: 300px !important;
+      margin-bottom: 1em;
+    }
+    p, a {
+      font-size: 0.95em;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Logo Section -->
+  <div class="logo-container">
+    <img src="BLACK HB LOGO.png" alt="Hour Broadcast Logo">
+  </div>
+
   <nav>
     <a href="#news">News</a>
     <a href="#investing">Investing</a>
@@ -72,7 +139,7 @@
 
     <h3 class="subtitle" style="font-weight: bold; color: #111; margin-top: 1.5em;"></h3>
     <p class="subtitle" style="color: #666;">
-      The Founder and Lead Analyst, <strong style="color: #111;">Franklyn Louis</strong> is a New York based college student with a growing focus on investment research and analysis. His journey began at the age of 16 during the height of the COVID-19 pandemic. Faced with months of uncertainty and boredom, he turned his attention to financial markets. Not just to trade, but to understand. He spent his time researching stocks and identifying potential leaders as the market looked to rebound from one of the sharpest bear markets in recent history.
+      Founder and Lead Analyst <strong style="color: #111;">Franklyn Louis</strong> is a New York based college student with a growing focus on investment research and analysis. His journey began at the age of 16 during the height of the COVID-19 pandemic. Faced with months of uncertainty and boredom, he turned his attention to financial markets. Not just to trade, but to understand. He spent his time researching stocks and identifying potential leaders as the market looked to rebound from one of the sharpest bear markets in recent history.
       <br><br>
       At 18, he began working in consumer banking, where he discovered a genuine interest in helping people make informed financial decisions. That hands-on experience further fueled his passion for the industry and shaped his career ambitions.
       <br><br>
@@ -153,7 +220,16 @@
           const prices = dates.map(d => parseFloat(ts[d]['4. close']));
           new Chart(document.getElementById(canvasId), {
             type: 'line',
-            data: { labels: dates, datasets: [{ label: `${symbol} Price`, data: prices, borderColor: 'blue', backgroundColor: 'rgba(0,0,255,0.1)', tension: 0.2 }] },
+            data: {
+              labels: dates,
+              datasets: [{
+                label: `${symbol} Price`,
+                data: prices,
+                borderColor: 'blue',
+                backgroundColor: 'rgba(0,0,255,0.1)',
+                tension: 0.2
+              }]
+            },
             options: { responsive: true }
           });
         })
@@ -176,7 +252,6 @@
   </script>
 </body>
 </html>
-
 
 
 
