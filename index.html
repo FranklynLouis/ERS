@@ -17,6 +17,7 @@
     .game { margin:0.75em 0; text-align:center; }
     .stock { margin-bottom:2.5em; }
     .stock-title { font-size:1.25em; font-weight:500; margin-bottom:0.5em; }
+    .news-header { font-size:1em; font-weight:500; margin:1em 0 0.5em; text-align:center; }
     .subtitle { font-size:1em; color:#666; text-align:center; margin-bottom:1.5em; }
     #about .subtitle { text-align:center; margin-bottom:1.5em; line-height:1.6; }
     canvas { width:100% !important; height:300px !important; margin-bottom:1em; }
@@ -48,25 +49,31 @@
     <div class="stock">
       <div class="stock-title">Uber Technologies, Inc. (NYSE: UBER)</div>
       <canvas id="chart-uber"></canvas>
+      <div class="news-header">Latest UBER News</div>
       <div id="news-uber">Loading news...</div>
     </div>
+
     <h2 class="title">BLIND GROWTH</h2>
     <p class="subtitle">Long-term investments with large growth potential.</p>
     <div class="stock">
       <div class="stock-title">Expedia Group Inc. (NASDAQ: EXPE)</div>
       <canvas id="chart-expe"></canvas>
+      <div class="news-header">Latest EXPE News</div>
       <div id="news-expe">Loading news...</div>
     </div>
     <div class="stock">
       <div class="stock-title">Diversified Energy Company (NYSE: DEC)</div>
       <canvas id="chart-dec"></canvas>
+      <div class="news-header">Latest DEC News</div>
       <div id="news-dec">Loading news...</div>
     </div>
     <div class="stock">
       <div class="stock-title">Microsoft Corp. (NASDAQ: MSFT)</div>
       <canvas id="chart-msft"></canvas>
+      <div class="news-header">Latest MSFT News</div>
       <div id="news-msft">Loading news...</div>
     </div>
+
     <p class="subtitle" style="color:#111;font-weight:bold;">
       Hour Broadcast Co. is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.
     </p>
@@ -85,7 +92,9 @@
 
     <p class="subtitle" style="color: #666;">
       Founder and Lead Analyst <strong style="color: #111;">Franklyn Louis</strong> is a New York based college student with a growing focus on
-      investment research and analysis. His journey began at the age of 16 during the height of the COVID-19 pandemic...    
+      investment research and analysis. His journey began at the age of 16 during the height of the COVID-19 pandemic. Faced with months
+      of uncertainty and boredom, he turned his attention to financial markets. At 18, he began working in consumer banking, which further
+      fueled his passion for the industry and shaped his career ambitions.
     </p>
     <p class="subtitle" style="color: #111; font-weight: bold;">
       Hour Broadcast Co. is for educational and informational purposes only. It should not be considered financial or investment advice.
@@ -100,7 +109,7 @@
     const PROXY = 'https://corsproxy.io/?';
 
     function showSection(id) {
-      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active')); 
       document.getElementById(id).classList.add('active');
     }
 
@@ -175,25 +184,6 @@
           const comp = e.competitions[0].competitors;
           const home = comp.find(c => c.homeAway==='home');
           const away = comp.find(c => c.homeAway==='away');
-          return filterTeams.includes(home.team.displayName) || filterTeams.includes(away.team.displayName);
-        }).slice(0,3).forEach(e => {
-          const comp = e.competitions[0].competitors;
-          const home = comp.find(c => c.homeAway==='home');
-          const away = comp.find(c => c.homeAway==='away');
-          const dateObj = new Date(e.date);
-          const dateStr = dateObj.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-          const timeStr = dateObj.toLocaleTimeString('en-US',{timeZone:'America/New_York',hour:'numeric',minute:'2-digit',hour12:true})+' EST';
-          const state = e.status.type.state;
-          const status = state==='post'?'Final':state==='in'?'In Progress':'Scheduled';
-          container.innerHTML += `<div class="game">${away.team.displayName} at ${home.team.displayName}<br><em>${dateStr} ${timeStr}</em><br>Score: ${away.score||0} - ${home.score||0} | Status: ${status}</div>`;
-        });
-      } catch (e) {
-        document.getElementById(containerId).innerHTML = '<p style="text-align:center">Error loading scores</p>';
-        console.error('Error fetching ESPN scores:', e);
-      }
-    }
-  </script>
-</body>
-</html>
+          return filterTeams.includes(home.team
 
 
