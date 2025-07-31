@@ -17,7 +17,6 @@
     .game { margin:0.75em 0; text-align:center; }
     .stock { margin-bottom:2.5em; }
     .stock-title { font-size:1.25em; font-weight:500; margin-bottom:0.5em; }
-    .news-header { font-size:1em; font-weight:500; margin:1em 0 0.5em; text-align:center; }
     .subtitle { font-size:1em; color:#666; text-align:center; margin-bottom:1.5em; }
     #about .subtitle { text-align:center; margin-bottom:1.5em; line-height:1.6; }
     canvas { width:100% !important; height:300px !important; margin-bottom:1em; }
@@ -25,9 +24,9 @@
 </head>
 <body>
   <nav>
-    <a onclick="showSection('news')">News</a>
-    <a onclick="showSection('investing')">Investment Research</a>
-    <a onclick="showSection('about')">About</a>
+    <a onclick="showSection('News')">News</a>
+    <a onclick="showSection('investment Research')">Investing</a>
+    <a onclick="showSection('About')">About</a>
   </nav>
 
   <div id="news" class="section active">
@@ -47,33 +46,27 @@
     <h2 class="title">QUICK PICK</h2>
     <p class="subtitle">Investments that are updated often for short-term gain opportunities.</p>
     <div class="stock">
-      <div class="stock-title">Uber Technologies, Inc. (NYSE: UBER)</div>
-      <canvas id="chart-uber"></canvas>
-      <div class="news-header">Latest UBER News</div>
-      <div id="news-uber">Loading news...</div>
+      <div class="stock-title">American Airlines (NASDAQ:AAL)</div>
+      <canvas id="chart-aal"></canvas>
+      <div id="news-aal">Loading news...</div>
     </div>
-
     <h2 class="title">BLIND GROWTH</h2>
-    <p class="subtitle">Long-term investments with large growth potential.</p>
+    <p class="subtitle">Long-term investments with high growth potential.</p>
     <div class="stock">
-      <div class="stock-title">Expedia Group Inc. (NASDAQ: EXPE)</div>
+      <div class="stock-title">Expedia Group Inc. (NASDAQ:EXPE)</div>
       <canvas id="chart-expe"></canvas>
-      <div class="news-header">Latest EXPE News</div>
       <div id="news-expe">Loading news...</div>
     </div>
     <div class="stock">
-      <div class="stock-title">Diversified Energy Company (NYSE: DEC)</div>
+      <div class="stock-title">Diversified Energy Company (NYSE:DEC)</div>
       <canvas id="chart-dec"></canvas>
-      <div class="news-header">Latest DEC News</div>
       <div id="news-dec">Loading news...</div>
     </div>
     <div class="stock">
-      <div class="stock-title">Microsoft Corp. (NASDAQ: MSFT)</div>
+      <div class="stock-title">Microsoft Corp. (NASDAQ:MSFT)</div>
       <canvas id="chart-msft"></canvas>
-      <div class="news-header">Latest MSFT News</div>
       <div id="news-msft">Loading news...</div>
     </div>
-
     <p class="subtitle" style="color:#111;font-weight:bold;">
       Hour Broadcast Co. is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.
     </p>
@@ -87,14 +80,18 @@
       evolving perspective on markets, economics, and business strategy.
     </p>
     <p class="subtitle">
-      <strong style="color: #111;">Long-term mission:</strong> To go as far as possible in the field of finance and to bring others along for the ride.
+      <strong style="color: #111;">Long-term mission: To go as far as possible in the field of finance and to bring others along for the ride.</strong>
     </p>
 
     <p class="subtitle" style="color: #666;">
       Founder and Lead Analyst <strong style="color: #111;">Franklyn Louis</strong> is a New York based college student with a growing focus on
       investment research and analysis. His journey began at the age of 16 during the height of the COVID-19 pandemic. Faced with months
-      of uncertainty and boredom, he turned his attention to financial markets. At 18, he began working in consumer banking, which further
-      fueled his passion for the industry and shaped his career ambitions.
+      of uncertainty and boredom, he turned his attention to financial markets. Not just to trade, but to understand.
+      At 18, he began working in consumer banking, where he discovered a genuine interest in helping people make informed financial
+      decisions. That hands-on experience further fueled his passion for the industry and shaped his career ambitions.
+      <br><br>
+      Today, Hour Broadcast Co. reflects his commitment to learn and grow in the industry. The site features original reports and analysis,
+      primarily intended for friends, family, and anyone interested in tracking the founder’s insights and keeping up with the news.
     </p>
     <p class="subtitle" style="color: #111; font-weight: bold;">
       Hour Broadcast Co. is for educational and informational purposes only. It should not be considered financial or investment advice.
@@ -109,7 +106,7 @@
     const PROXY = 'https://corsproxy.io/?';
 
     function showSection(id) {
-      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active')); 
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
       document.getElementById(id).classList.add('active');
     }
 
@@ -118,12 +115,18 @@
       showSection(location.hash.substring(1) || 'news');
       fetchGeneralNews();
       fetchSportsHeadline();
-      ['UBER','EXPE','DEC','MSFT'].forEach(t => fetchCompanyNews(t, 'news-' + t.toLowerCase()));
-      ['UBER','EXPE','DEC','MSFT'].forEach(t => fetchStockData(t, 'chart-' + t.toLowerCase()));
+      ['AAL','EXPE','DEC','MSFT'].forEach(t => fetchCompanyNews(t, 'news-' + t.toLowerCase()));
+      [['AAL','chart-aal'],['EXPE','chart-expe'],['DEC','chart-dec'],['MSFT','chart-msft']]
+        .forEach(([s,c]) => fetchStockData(s,c));
       fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20250727', 'mlb-scores');
       fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20250622', 'nba-scores');
       fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20250731', 'nfl-scores');
       fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=20250815', 'epl-scores');
+      document.getElementById('toggle-scores')?.addEventListener('click', e => {
+        e.preventDefault();
+        const sc = document.getElementById('scores-container');
+        if (sc) sc.style.display = sc.style.display === 'none' ? 'block' : 'none';
+      });
     });
 
     async function fetchNews(containerId, url) {
@@ -184,6 +187,27 @@
           const comp = e.competitions[0].competitors;
           const home = comp.find(c => c.homeAway==='home');
           const away = comp.find(c => c.homeAway==='away');
-          return filterTeams.includes(home.team
+          return filterTeams.includes(home.team.displayName) || filterTeams.includes(away.team.displayName);
+        }).slice(0,3).forEach(e => {
+          const comp = e.competitions[0].competitors;
+          const home = comp.find(c => c.homeAway==='home');
+          const away = comp.find(c => c.homeAway==='away');
+          const dateObj = new Date(e.date);
+          const dateStr = dateObj.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+          const timeStr = dateObj.toLocaleTimeString('en-US',{timeZone:'America/New_York',hour:'numeric',minute:'2-digit',hour12:true})+' EST';
+          const state = e.status.type.state;
+          const status = state==='post'?'Final':state==='in'?'In Progress':'Scheduled';
+          container.innerHTML += `<div class="game">${away.team.displayName} at ${home.team.displayName}<br><em>${dateStr} ${timeStr}</em><br>Score: ${away.score||0} - ${home.score||0} | Status: ${status}</div>`;
+        });
+      } catch (e) {
+        document.getElementById(containerId).innerHTML = '<p style="text-align:center">Error loading scores</p>';
+        console.error('Error fetching ESPN scores:', e);
+      }
+    }
+  </script>
+</body>
+</html>
+
+
 
 
