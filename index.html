@@ -25,7 +25,7 @@
 <body>
   <nav>
     <a onclick="showSection('news')">News</a>
-    <a onclick="showSection('investing')">Investing</a>
+    <a onclick="showSection('investing')">Investment Research</a>
     <a onclick="showSection('about')">About</a>
   </nav>
 
@@ -44,14 +44,14 @@
 
   <div id="investing" class="section">
     <h2 class="title">QUICK PICK</h2>
-    <p class="subtitle">Updated often for short-term gain opportunities.</p>
+    <p class="subtitle">Investments that are uepdated often for short-term gain opportunities.</p>
     <div class="stock">
-      <div class="stock-title">American Airlines (NASDAQ:AAL)</div>
-      <canvas id="chart-aal"></canvas>
-      <div id="news-aal">Loading news...</div>
+      <div class="stock-title">Uber Technologies, Inc. (NYSE: UBER)</div>
+      <canvas id="chart-UBER"></canvas>
+      <div id="news-UBER">Loading news...</div>
     </div>
     <h2 class="title">BLIND GROWTH</h2>
-    <p class="subtitle">Long-term investments with growth potential.</p>
+    <p class="subtitle">Long-term investments with large growth potential.</p>
     <div class="stock">
       <div class="stock-title">Expedia Group Inc. (NASDAQ:EXPE)</div>
       <canvas id="chart-expe"></canvas>
@@ -115,8 +115,8 @@
       showSection(location.hash.substring(1) || 'news');
       fetchGeneralNews();
       fetchSportsHeadline();
-      ['AAL','EXPE','DEC','MSFT'].forEach(t => fetchCompanyNews(t, 'news-' + t.toLowerCase()));
-      [['AAL','chart-aal'],['EXPE','chart-expe'],['DEC','chart-dec'],['MSFT','chart-msft']]
+      ['UBER','EXPE','DEC','MSFT'].forEach(t => fetchCompanyNews(t, 'news-' + t.toLowerCase()));
+      [['UBER','chart-aal'],['EXPE','chart-expe'],['DEC','chart-dec'],['MSFT','chart-msft']]
         .forEach(([s,c]) => fetchStockData(s,c));
       fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20250727', 'mlb-scores');
       fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20250622', 'nba-scores');
