@@ -35,7 +35,6 @@
     <h2 class="sports-title">SPORTS</h2>
     <div id="sports-news">Loading sports headline...</div>
     <div id="sports-scores">
-      <h3>MLB</h3><div id="mlb-scores">Loading scores...</div>
       <h3>NBA</h3><div id="nba-scores">Loading scores...</div>
       <h3>NFL</h3><div id="nfl-scores">Loading scores...</div>
       <h3>Premier League</h3><div id="epl-scores">Loading scores...</div>
@@ -123,7 +122,6 @@
       ['AAL','EXPE','DEC','MSFT'].forEach(t => fetchCompanyNews(t, 'news-' + t.toLowerCase()));
       [['AAL','chart-aal'],['EXPE','chart-expe'],['DEC','chart-dec'],['MSFT','chart-msft']]
         .forEach(([s,c]) => fetchStockData(s,c));
-      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=202500815', 'mlb-scores');
       fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20250622', 'nba-scores');
       fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20250809', 'nfl-scores');
       fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=20250823', 'epl-scores');
