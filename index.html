@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -20,24 +20,6 @@
     .subtitle { font-size:1em; color:#666; text-align:center; margin-bottom:1.5em; }
     #about .subtitle { text-align:center; margin-bottom:1.5em; line-height:1.6; }
     canvas { width:100% !important; height:300px !important; margin-bottom:1em; }
-
-    /* === AI Search (Brave) styles === */
-    .ai-search-wrap{max-width:1000px;margin:0 auto 1.25rem auto;padding:0 1rem}
-    .ai-search-card{background:#fff;border:1px solid #e6e6e6;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.04);padding:1rem}
-    .ai-search-row{display:flex;gap:.5rem}
-    .ai-search-input{flex:1;font:500 16px/1.3 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;border:1px solid #ddd;border-radius:8px;padding:.75rem 1rem;outline:none}
-    .ai-search-input:focus{border-color:#111;box-shadow:0 0 0 3px rgba(17,17,17,.08)}
-    .ai-search-btn{border:1px solid #111;background:#111;color:#fff;border-radius:8px;padding:.75rem 1rem;cursor:pointer;font-weight:600}
-    .ai-search-btn:disabled{opacity:.6;cursor:not-allowed}
-    .ai-search-results{margin-top:.75rem}
-    .ai-search-item{padding:.75rem 0;border-top:1px solid #f0f0f0}
-    .ai-search-item:first-child{border-top:none}
-    .ai-search-title{font-weight:600;margin:0 0 .25rem 0}
-    .ai-search-link{color:#111;text-decoration:none}
-    .ai-search-link:hover{text-decoration:underline}
-    .ai-search-snippet{color:#444;margin:.25rem 0 0 0}
-    .ai-search-meta{font-size:12px;color:#888;margin-top:.25rem;word-break:break-all}
-    .ai-search-status{font-size:14px;color:#666;margin-top:.75rem}
   </style>
 </head>
 <body>
@@ -60,29 +42,13 @@
   </div>
 
   <div id="investing" class="section">
-    <!-- === AI Search (Brave) anchor (auto-mounts above #quick-picks) === -->
-    <div id="ai-search-anchor" class="ai-search-wrap" style="display:none">
-      <div class="ai-search-card">
-        <div class="ai-search-row">
-          <input id="ai-search-input" class="ai-search-input" type="search" placeholder="Search markets, companies, or finance topics…" />
-          <button id="ai-search-btn" class="ai-search-btn">Search</button>
-        </div>
-        <div id="ai-search-status" class="ai-search-status"></div>
-        <div id="ai-search-results" class="ai-search-results"></div>
-      </div>
+    <h2 class="title">QUICK PICK</h2>
+    <p class="subtitle">An investment that is updated often for short-term gain opportunities.</p>
+    <div class="stock">
+      <div class="stock-title">American Airlines (NASDAQ:AAL)</div>
+      <canvas id="chart-aal"></canvas>
+      <div id="news-aal">Loading news...</div>
     </div>
-    <!-- === /AI Search (Brave) anchor === -->
-
-    <div id="quick-picks">
-      <h2 class="title">QUICK PICK</h2>
-      <p class="subtitle">An investment that is updated often for short-term gain opportunities.</p>
-      <div class="stock">
-        <div class="stock-title">American Airlines (NASDAQ:AAL)</div>
-        <canvas id="chart-aal"></canvas>
-        <div id="news-aal">Loading news...</div>
-      </div>
-    </div>
-
     <h2 class="title">BLIND GROWTH</h2>
     <p class="subtitle">Long-term investments with high growth potential.</p>
     <div class="stock">
@@ -109,6 +75,7 @@
     <h2 class="title">About Fresearch.org</h2>
     <p class="subtitle">
       Fresearch.org is a free independent investment research site created with the goal of sharing thoughtful, data-driven analysis. 
+
     </p>
     <p class="subtitle">
       <strong style="color: #111;">Our Mission: To learn as much as possible about financial markets and bring others along for the ride.</strong>
@@ -128,6 +95,7 @@
       This combination of analytical skill and practical experience continues to inspire his career goals, as well as strengthen his dedication to advance in the industry.
       <br><br>
       Today, Fresearch.org is a direct reflection of his commitment to continue learning and growing. 
+      
     <p class="subtitle" style="color: #111; font-weight: bold;">
       Fresearch.org is for educational and informational purposes only. It should not be considered financial or investment advice.
       Always do your own research before making decisions.
@@ -135,117 +103,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- === AI Search (Brave) script === -->
-  <script>
-  (function(){
-    // === CONFIG ===
-    const BRAVE_API_KEY = "BSAvtx9iW1BrvH_fJXytIGhh-iXY9ej"; // provided by you
-    const MAX_RESULTS = 6;
-
-    // Try to mount above Quick Picks
-    function mountAboveQuickPicks(){
-      const quick = document.getElementById("quick-picks");
-      const anchor = document.getElementById("ai-search-anchor");
-      if(quick && anchor){
-        quick.parentNode.insertBefore(anchor, quick);
-        anchor.style.display = "block";
-      } else if(anchor){
-        // Fallback: insert at top of Investing
-        const investing = document.getElementById("investing") || document.body;
-        investing.insertBefore(anchor, investing.firstChild);
-        anchor.style.display = "block";
-        console.warn("AI Search: #quick-picks not found. Inserted at top of Investing.");
-      }
-    }
-
-    function setStatus(msg){ document.getElementById("ai-search-status").textContent = msg || ""; }
-    function renderResults(items){
-      const box = document.getElementById("ai-search-results");
-      box.innerHTML = "";
-      if(!items || !items.length){
-        box.innerHTML = "<div class='ai-search-status'>No results.</div>";
-        return;
-      }
-      for(const r of items){
-        const title = r.title || r.name || "Untitled";
-        const url = r.url || r.link || r.permalink || "#";
-        const snippet = r.description || r.snippet || r.text || "";
-        const host = (()=>{ try { return new URL(url).host; } catch(e){ return ""; } })();
-
-        const item = document.createElement("div");
-        item.className = "ai-search-item";
-        item.innerHTML =
-          `<h4 class="ai-search-title"><a class="ai-search-link" href="${url}" target="_blank" rel="noopener noreferrer">${title}</a></h4>
-           ${snippet ? `<p class="ai-search-snippet">${snippet}</p>` : ""}
-           ${host ? `<div class="ai-search-meta">${host}</div>` : ""}`;
-        box.appendChild(item);
-      }
-    }
-
-    async function braveSearch(q){
-      const endpoint = "https://api.search.brave.com/res/v1/web/search";
-      const params = new URLSearchParams({
-        q: q.trim(),
-        count: String(MAX_RESULTS)
-        // You can bias toward fresh finance news by adding:
-        // , freshness: "month"
-      });
-
-      const res = await fetch(endpoint + "?" + params.toString(), {
-        method: "GET",
-        headers: {
-          "Accept": "application/json",
-          "X-Subscription-Token": BRAVE_API_KEY
-        }
-      });
-
-      if(!res.ok){
-        const txt = await res.text();
-        throw new Error(`HTTP ${res.status}: ${txt}`);
-      }
-      return res.json();
-    }
-
-    function initUI(){
-      const input = document.getElementById("ai-search-input");
-      const btn = document.getElementById("ai-search-btn");
-
-      async function run(){
-        const q = input.value.trim();
-        if(!q){ setStatus("Type something to search…"); return; }
-        btn.disabled = true;
-        setStatus("Searching…");
-        document.getElementById("ai-search-results").innerHTML = "";
-        try{
-          const data = await braveSearch(q);
-          const results = data?.web?.results || [];
-          renderResults(results);
-          setStatus("");
-        }catch(err){
-          console.error(err);
-          setStatus("Error fetching results. Please try again.");
-        }finally{
-          btn.disabled = false;
-        }
-      }
-
-      btn.addEventListener("click", run);
-      input.addEventListener("keydown", (e)=>{ if(e.key === "Enter") run(); });
-
-      // Optional debounce for type-to-search:
-      // let t=null; input.addEventListener("input", ()=>{ clearTimeout(t); t=setTimeout(run, 500); });
-    }
-
-    // Mount once DOM is ready (Investing tab content is already in DOM)
-    document.addEventListener("DOMContentLoaded", function(){
-      mountAboveQuickPicks();
-      initUI();
-    });
-  })();
-  </script>
-  <!-- === /AI Search (Brave) script === -->
-
   <script>
     const NEWSAPI_KEY = 'ab40cc3f4aea49aab032bbe04fdc10b3';
     const ALPHA_KEY = 'JAKAWZBJIWZVSKZ1';
