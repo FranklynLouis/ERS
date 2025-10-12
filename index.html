@@ -81,7 +81,7 @@
     <div class="stock">
       <div class="stock-title">JPMorgan Chase & Co (NYSE:JPM)</div>
       <canvas id="chart-jpm"></canvas>
-      <div id="news-expe">Loading news...</div>
+      <div id="news-jpm">Loading news...</div>
     </div>
     <div class="stock">
       <div class="stock-title">Diversified Energy Company (NYSE:DEC)</div>
@@ -147,7 +147,7 @@
       fetchGeneralNews();
       fetchSportsHeadline();
       ['AAL','EXPE','DEC','MSFT'].forEach(t => fetchCompanyNews(t, 'news-' + t.toLowerCase()));
-      [['AAL','chart-aal'],['EXPE','chart-expe'],['DEC','chart-dec'],['MSFT','chart-msft']]
+      [['AAL','chart-aal'],['JPM','chart-jpm'],['DEC','chart-dec'],['MSFT','chart-msft']]
         .forEach(([s,c]) => fetchStockData(s,c));
       fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20250622', 'nba-scores');
       fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20251009', 'nfl-scores');
