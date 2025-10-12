@@ -15,6 +15,7 @@
 
     /* Site heading */
     .site-heading {
+      background:#111;
       color:#fff;
       font-size:2em;
       font-weight:700;
@@ -150,8 +151,8 @@
       [['AAL','chart-aal'],['EXPE','chart-expe'],['DEC','chart-dec'],['MSFT','chart-msft']]
         .forEach(([s,c]) => fetchStockData(s,c));
       fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20250622', 'nba-scores');
-      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20251010', 'nfl-scores');
-      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=20251010', 'epl-scores');
+      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20251009', 'nfl-scores');
+      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=20251009', 'epl-scores');
     });
 
     async function fetchNews(containerId, url) {
