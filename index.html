@@ -54,7 +54,7 @@
   <nav>
     <a onclick="showSection('news')">News</a>
     <a onclick="showSection('investing')">Investing</a>
-    <a onclick="showSection('education')">Education</a>
+    <a onclick="showSection('insights')">Insights</a>
     <a onclick="showSection('about')">About</a>
   </nav>
 
@@ -72,7 +72,7 @@
 
   <div id="investing" class="section">
     <h2 class="title">BLIND GROWTH</h2>
-    <p class="subtitle">Long-term investment with high growth potential.</p>
+    <p class="subtitle">Long-term investment with consistent returns.</p>
     <div class="stock">
       <div class="stock-title">Verizon Communications Inc. (NYSE:VZ)</div>
       <canvas id="chart-vz"></canvas>
@@ -91,9 +91,9 @@
       <div id="news-hood">Loading news...</div>
     </div>
     <div class="stock">
-      <div class="stock-title">Microsoft Corp. (NASDAQ:MSFT)</div>
-      <canvas id="chart-msft"></canvas>
-      <div id="news-msft">Loading news...</div>
+      <div class="stock-title">Uber Technologies, inc. (NYSE:UBER)</div>
+      <canvas id="chart-uber"></canvas>
+      <div id="news-uber">Loading news...</div>
     </div>
     <p class="subtitle" style="color:#111;font-weight:bold;">
       Fresearch.org is for educational and informational purposes only. It should not be considered financial or investment advice. Always do your own research before making decisions.
@@ -101,7 +101,7 @@
   </div>
 
 
-<div id="education" class="section">
+<div id="Insights" class="section">
     <h2 class="title">Financial and Investing Literacy</h2>
   
   <div class="post">
@@ -109,19 +109,6 @@
   <p class="content">Inflation measures how prices rise over time, reducing what your money can buy. 
     A 3% inflation rate means $100 today will need to be $103 next year to have the same value. 
     Moderate inflation signals growth but when it runs high, it erodes savings and pressures central banks to act.</p>
-  </div>
-
-  <div class="post">
-  <h3 class="subject">Financial Lit: Credit Utilization Explained</h3>
-  <p class="content">Your credit score isn’t just about paying on time. It’s also about how much credit you use. 
-    Keeping utilization under 30% (ideally under 10%) shows lenders you’re responsible, boosting your score over time.</p>
-  </div>
-
-  <div class="post">
-  <h3 class="subject">Investing Lit: Stablecoins</h3>
-  <p class="content">Stablecoins aim to hold a steady value, but not all are built the same. 
-    Fiat backed coins like USDC and USDT are backed by real-dollar reserves. 
-    Algorithmic stablecoins use code and market incentives to but they’re riskier, as shown by past crashes. Always check what’s backing your digital dollar.</p>
   </div>
 
   
@@ -175,8 +162,8 @@
       showSection(location.hash.substring(1) || 'news');
       fetchGeneralNews();
       fetchSportsHeadline();
-      ['AAL','JPM','HOOD','MSFT'].forEach(t => fetchCompanyNews(t, 'news-' + t.toLowerCase()));
-      [['AAL','chart-aal'],['JPM','chart-jpm'],['HOOD','chart-hood'],['MSFT','chart-msft']]
+      ['VZ','JPM','HOOD','UBER'].forEach(t => fetchCompanyNews(t, 'news-' + t.toLowerCase()));
+      [['VZ','chart-aal'],['JPM','chart-jpm'],['HOOD','chart-hood'],['UBER','chart-uber']]
         .forEach(([s,c]) => fetchStockData(s,c));
       fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20250622', 'nba-scores');
       fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20251009', 'nfl-scores');
