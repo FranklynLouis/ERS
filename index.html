@@ -109,9 +109,9 @@
     <h2 class="title">QUICK PICKS</h2>
     <p class="subtitle">Investments that are updated often for short-term gain opportunities.</p>
     <div class="stock">
-      <div class="stock-title">JPMorgan Chase & Co (NYSE:JPM)</div>
-      <canvas id="chart-jpm"></canvas>
-      <div id="news-jpm">Loading news...</div>
+      <div class="stock-title">Snap Inc. (NYSE:SNAP)</div>
+      <canvas id="chart-snap"></canvas>
+      <div id="news-snap">Loading news...</div>
     </div>
     <div class="stock">
       <div class="stock-title">Robinhood Markets Inc (NASDAQ:HOOD)</div>
@@ -240,12 +240,12 @@
       showSection(location.hash.substring(1) || 'news');
       fetchGeneralNews();
       fetchSportsHeadline();
-      ['VZ','JPM','HOOD','UBER'].forEach(t => fetchCompanyNews(t, 'news-' + t.toLowerCase()));
-      [['VZ','chart-vz'],['JPM','chart-jpm'],['HOOD','chart-hood'],['UBER','chart-uber']]
+      ['VZ','SNAP','HOOD','UBER'].forEach(t => fetchCompanyNews(t, 'news-' + t.toLowerCase()));
+      [['VZ','chart-vz'],['SNAP','chart-SNAP'],['HOOD','chart-hood'],['UBER','chart-uber']]
         .forEach(([s,c]) => fetchStockData(s,c));
-      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=2025125', 'nba-scores');
-      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=2025121', 'nfl-scores');
-      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=2025123', 'epl-scores');
+      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20251205', 'nba-scores');
+      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20251204', 'nfl-scores');
+      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=20251203', 'epl-scores');
     });
 
     async function fetchNews(containerId, url) {
