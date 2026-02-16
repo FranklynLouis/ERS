@@ -243,9 +243,9 @@
       ['VZ','SNAP','HOOD','UBER'].forEach(t => fetchCompanyNews(t, 'news-' + t.toLowerCase()));
       [['VZ','chart-vz'],['SNAP','chart-SNAP'],['HOOD','chart-hood'],['UBER','chart-uber']]
         .forEach(([s,c]) => fetchStockData(s,c));
-      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=2026215', 'nba-scores');
-      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=2026215', 'nfl-scores');
-      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=2026215', 'epl-scores');
+      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260215', 'nba-scores');
+      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260208', 'nfl-scores');
+      fetchESPNScore('https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=20260215', 'epl-scores');
     });
 
     async function fetchNews(containerId, url) {
